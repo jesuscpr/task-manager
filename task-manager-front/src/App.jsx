@@ -66,6 +66,7 @@ function App() {
     if (activeCard == null) return;
 
     const taskToMove = tasks[activeCard];
+    const isSameStatus = taskToMove.status === status;
     
     // Crear nuevo array sin la tarea a mover
     const updatedTasks = tasks.filter((_, index) => index !== activeCard);
@@ -73,13 +74,26 @@ function App() {
     // Encontrar las tasks del status destino (después de remover la tarea)
     const statusTasks = updatedTasks.filter(t => t.status === status);
     
+    // AJUSTAR LA POSICIÓN si estamos moviendo dentro del mismo status
+    // y la posición destino está después de la posición original
+    let adjustedPosition = position;
+    if (isSameStatus) {
+      const originalPositionInStatus = tasks
+        .filter(t => t.status === status)
+        .findIndex((_, idx) => tasks.indexOf(tasks.filter(t => t.status === status)[idx]) === activeCard);
+      
+      if (position > originalPositionInStatus) {
+        adjustedPosition = position - 1;
+      }
+    }
+    
     // Calcular la posición global donde insertar
     let globalPosition;
-    if (position === 0) {
+    if (adjustedPosition === 0) {
       // Insertar al inicio del status
       const firstStatusTask = updatedTasks.find(t => t.status === status);
       globalPosition = firstStatusTask ? updatedTasks.indexOf(firstStatusTask) : updatedTasks.length;
-    } else if (position >= statusTasks.length) {
+    } else if (adjustedPosition >= statusTasks.length) {
       // Insertar al final del status
       const lastStatusTaskIndex = updatedTasks.map((t, i) => t.status === status ? i : -1)
         .filter(i => i !== -1)
@@ -87,7 +101,7 @@ function App() {
       globalPosition = lastStatusTaskIndex !== undefined ? lastStatusTaskIndex + 1 : updatedTasks.length;
     } else {
       // Insertar entre tasks del mismo status
-      globalPosition = updatedTasks.indexOf(statusTasks[position]);
+      globalPosition = updatedTasks.indexOf(statusTasks[adjustedPosition]);
     }
     
     // Insertar la tarea con el nuevo status
