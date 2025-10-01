@@ -4,6 +4,7 @@
 
 ### Próximas tareas:
 
+- Implementar modal para añadir nuevos proyectos
 - Implementar backend
 - Implementar bases de datos
 - Implementar scroll por estado
