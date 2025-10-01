@@ -1,0 +1,154 @@
+.home {
+  position: absolute;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+#header {
+  display: flex;
+  justify-content: center;
+}
+
+.banner {
+  font-size: x-large;
+  font-weight: 600;
+}
+
+#content {
+  flex: 1;
+  display: flex;
+}
+
+#sidebar {
+  display: flex;
+  border: 1px solid black;
+  max-width: 11%;
+  min-width: 3%;
+  align-items: start;
+  flex-direction: column;
+  justify-content: space-between;
+  transition-duration: 0.5s;
+}
+
+#sidebar ul li {
+  list-style: none;
+}
+
+.hideShowBtn {
+  padding: 5px;
+  background-color: rgba(82, 163, 255);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 4px;
+}
+
+.hideShowBtn:hover {
+  background-color: rgba(82, 163, 255, 0.7);
+}
+
+.newProjectBtn {
+  padding: 5px;
+  margin: 4px;
+  background-color: rgba(82, 163, 255);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.newProjectBtn:hover {
+  background-color: rgba(82, 163, 255, 0.7);
+}
+
+.projectButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.justShow {
+  display: flex;
+  justify-content: center;
+}
+
+#projects {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.project {
+  background-color: rgb(109, 184, 255);
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.project:hover {
+  background-color: rgba(140, 194, 255, 0.5);
+}
+
+.selected {
+  background-color: rgb(58, 136, 226);
+}
+
+.selected:hover {
+  background-color: rgba(74, 144, 226, 0.7);
+}
+
+.profile {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+}
+
+.profileShort {
+  display: flex;
+  width: 100%;
+  padding: 5px;
+  justify-content: space-between;
+}
+
+.profileIcon {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  border-radius: 6px;
+  margin-bottom: 5px;
+}
+
+.profileIcon:hover {
+  background-color: rgba(58, 136, 226, 0.5);
+}
+
+.settingsIcon {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.settingsIcon:hover {
+  background-color: rgba(58, 136, 226, 0.5);
+}
+
+#manager {
+  flex: 1;
+  border: 1px solid blue;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#footer {
+  justify-items: center;
+}
+
+#footer a {
+  text-decoration: none;
+}
