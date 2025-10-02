@@ -10,13 +10,12 @@ import profileIcon from './assets/profile.svg'
 const initialTasks = [
   {id: 1, project: 1, task: "Hacer estructura de la página", status: "done"},
   {id: 2, project: 1, task: "Conseguir hacer el drag and drop", status: "done"},
-  {id: 3, project: 1, task: "Estilar la página (arreglar animaciones sidebar también)", status: "todo"},
-  {id: 4, project: 1, task: "Mejorar side bar", status: "inprocess"},
+  {id: 3, project: 1, task: "Hacer que cuando hay muchas tareas de una columna el scroll sea en la columna y no en la página", status: "todo"},
+  {id: 4, project: 1, task: "Estilar la página (arreglar animaciones sidebar también)", status: "todo"},
   {id: 5, project: 1, task: "Añadir símbolo y modal para añadir tasks", status: "done"},
-  {id: 6, project: 1, task: "Implementar backend", status: "todo"},
-  {id: 7, project: 1, task: "Implementar bases de datos", status: "todo"},
-  {id: 8, project: 1, task: "Hacer que cuando hay muchas tareas de una columna el scroll sea en la columna y no en la página", status: "todo"},
-  {id: 9, project: 2, task: "Hacer estructura de PFinance", status: "todo"}
+  {id: 6, project: 1, task: "Implementar backend", status: "inprocess"},
+  {id: 7, project: 1, task: "Implementar bases de datos", status: "inprocess"},
+  {id: 8, project: 2, task: "Hacer estructura de PFinance", status: "todo"}
 ]
 
 const initialProjects = [
@@ -38,6 +37,31 @@ function App() {
   useEffect(() => {
     setTasks(initialTasks.filter(task => task.project === 1))
   }, [])
+
+  const handleCloseModal = () => {
+    setIsClosing(true)
+    setTimeout(() => {
+      setIsModalOpen(false)
+      setIsClosing(false)
+    }, 300) // Duración de la animación
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (newProjectText.trim()) {
+      handleAddProject(newProjectText)
+      setNewProjectText('')
+      handleCloseModal()
+    }
+  }
+
+  const handleAddProject = (newProject) => {
+    const newProjectObj = {
+      id: projects.length > 0 ? Math.max(...projects.map(project => project.id)) + 1 : 1,
+      name: newProject
+    }
+    setProjects([...projects, newProjectObj])
+  }
 
   const handleProjectChange = (id) => {
     setTasks(initialTasks.filter(task => task.project === id))
@@ -167,6 +191,52 @@ function App() {
           <img src={profileIcon}  className='profileIcon' />
           <img src={settingsIcon} className='settingsIcon' />
         </div>
+
+        {isModalOpen && (
+          <div 
+            className={`modal-overlay ${isClosing ? 'closing' : ''}`}
+            onClick={handleCloseModal}
+          >
+            <div 
+              className={`modal-content ${isClosing ? 'closing' : ''}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className='modal-close' onClick={handleCloseModal}>
+                &times;
+              </button>
+              <h3 className='modal-title'>Añadir nuevo proyecto</h3>
+              
+              <div className='form-container'>
+                <label className='form-label'>Nombre del proyecto</label>
+                <textarea
+                  value={newProjectText}
+                  onChange={(e) => setNewProjectText(e.target.value)}
+                  placeholder='Escribe el nombre del proyecto aquí...'
+                  className='form-textarea'
+                  rows='4'
+                  autoFocus
+                />
+                
+                <div className='modal-buttons'>
+                  <button 
+                    type='button'
+                    onClick={handleCloseModal}
+                    className='btn-cancel'
+                  >
+                    Cancelar
+                  </button>
+                  <button 
+                    onClick={handleSubmit}
+                    className='btn-submit'
+                    disabled={!newProjectText.trim()}
+                  >
+                    Añadir Proyecto
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </aside>
       <main id="manager">
         <TaskColumn
