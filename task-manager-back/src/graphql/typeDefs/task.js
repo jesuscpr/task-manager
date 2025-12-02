@@ -25,7 +25,6 @@ export const taskTypeDefs = `#graphql
     labels: [Label]
     comments: [Comment]
     due_date: DateTime
-    position: Int!
     created_at: DateTime!
     updated_at: DateTime!
   }
@@ -67,7 +66,6 @@ export const taskTypeDefs = `#graphql
       status: TaskStatus
       priority: TaskPriority
       due_date: DateTime
-      position: Int
     ): Task
     
     updateTask(
@@ -77,7 +75,6 @@ export const taskTypeDefs = `#graphql
       status: TaskStatus
       priority: TaskPriority
       due_date: DateTime
-      position: Int
     ): Task
     
     deleteTask(id: ID!): Boolean
@@ -91,10 +88,5 @@ export const taskTypeDefs = `#graphql
       taskId: ID!
       userId: ID!
     ): Boolean
-    
-    reorderTasks(
-      projectId: ID!
-      taskIds: [ID!]!
-    ): [Task]
   }
 `;

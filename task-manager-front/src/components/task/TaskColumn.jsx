@@ -1,22 +1,30 @@
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
+import { useDroppable } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import './TaskColumn.css'
-import DropArea from './DropArea'
-import TaskCard from './TaskCard'
+import SortableTaskCard from './SortableTaskCard'
+import iconoAdd from '../../assets/add.svg'
 
-import iconoAdd from '../assets/add.svg'
-
-const TaskColumn = ({ title, tasks, status, handleDelete, setActiveCard, onDrop, handleAddTask }) => {
-  const statusTasks = tasks.filter(t => t.status === status)
+const TaskColumn = ({ title, tasks, status, handleDelete, handleAddTask, onTaskClick }) => {
+  // Normalizar status para comparar
+  const normalizedStatus = status.toUpperCase().replace('INPROCESS', 'IN_PROGRESS')
+  const statusTasks = tasks.filter(t => t.status === normalizedStatus)
+  
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [newTaskText, setNewTaskText] = useState('')
+
+  // Configurar droppable
+  const { setNodeRef, isOver } = useDroppable({
+    id: status,
+  })
 
   const handleCloseModal = () => {
     setIsClosing(true)
     setTimeout(() => {
       setIsModalOpen(false)
       setIsClosing(false)
-    }, 300) // Duración de la animación
+    }, 300)
   }
 
   const handleSubmit = (e) => {
@@ -40,25 +48,31 @@ const TaskColumn = ({ title, tasks, status, handleDelete, setActiveCard, onDrop,
         />
       </div>
       
-      <DropArea onDrop={() => onDrop(status, 0)} big={statusTasks.length === 0}/>
-      {statusTasks.map((task, statusIndex) => {
-        const globalIndex = tasks.findIndex(t => t.id === task.id)
-        const isLast = statusIndex === statusTasks.length - 1
+      <div
+        ref={setNodeRef}
+        className={`taskList ${isOver ? 'draggingOver' : ''}`}
+      >
+        <SortableContext
+          items={statusTasks.map(t => t.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {statusTasks.length === 0 ? (
+            <div className="emptyColumn">
+              Arrastra tareas aquí
+            </div>
+          ) : (
+            statusTasks.map((task) => (
+              <SortableTaskCard
+                key={task.id}
+                task={task}
+                handleDelete={() => handleDelete(task.id)}
+                onTaskClick={onTaskClick}
+              />
+            ))
+          )}
+        </SortableContext>
+      </div>
 
-        return (
-          <Fragment key={task.id}>
-            <TaskCard
-              title={task.task}
-              handleDelete={handleDelete}
-              index={globalIndex}
-              setActiveCard={setActiveCard}
-            />
-            <DropArea onDrop={() => onDrop(status, statusIndex + 1)} big={isLast} />
-          </Fragment>
-        )
-      })}
-
-      {/* Modal */}
       {isModalOpen && (
         <div 
           className={`modal-overlay ${isClosing ? 'closing' : ''}`}

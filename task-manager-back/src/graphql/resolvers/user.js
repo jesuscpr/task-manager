@@ -9,8 +9,24 @@ export const userResolvers = {
         .eq('id', user.id)
         .single();
       
-      if (error) throw new Error(error.message);
-      return { ...data, email: user.email };
+      if (error) {
+        // Si no existe el perfil, crearlo con datos básicos
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert([{
+            id: user.id,
+            email: user.email,
+            username: null,
+            full_name: null,
+          }])
+          .select()
+          .single();
+
+        if (createError) throw new Error(createError.message);
+        return newProfile;
+      }
+      
+      return data;
     },
 
     user: async (_, { id }, { supabase }) => {
@@ -58,8 +74,12 @@ export const userResolvers = {
         user: {
           id: data.user.id,
           email: data.user.email,
-          username,
-          full_name,
+          username: username || null,
+          full_name: full_name || null,
+          avatar_url: null,
+          bio: null,
+          created_at: data.user.created_at,
+          updated_at: data.user.created_at,
         },
         access_token: data.session?.access_token || null,
         refresh_token: data.session?.refresh_token || null,
@@ -75,6 +95,7 @@ export const userResolvers = {
 
       if (error) throw new Error(error.message);
 
+      // Obtener perfil del usuario
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
@@ -85,7 +106,12 @@ export const userResolvers = {
         user: {
           id: data.user.id,
           email: data.user.email,
-          ...profile,
+          username: profile?.username || null,
+          full_name: profile?.full_name || null,
+          avatar_url: profile?.avatar_url || null,
+          bio: profile?.bio || null,
+          created_at: profile?.created_at || data.user.created_at,
+          updated_at: profile?.updated_at || data.user.updated_at,
         },
         access_token: data.session.access_token,
         refresh_token: data.session.refresh_token,

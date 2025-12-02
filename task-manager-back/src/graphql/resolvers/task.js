@@ -45,7 +45,7 @@ export const taskResolvers = {
         .from('tasks')
         .select('*')
         .eq('project_id', projectId)
-        .order('position', { ascending: true });
+        .order('updated_at', { ascending: false });
 
       if (filter) {
         if (filter.status) {
@@ -129,7 +129,7 @@ export const taskResolvers = {
         .from('tasks')
         .select('*')
         .in('id', taskIds)
-        .order('due_date', { ascending: true, nullsFirst: false });
+        .order('updated_at', { ascending: false });
 
       if (status) {
         query = query.eq('status', mapStatusToDb(status));
@@ -163,7 +163,6 @@ export const taskResolvers = {
           priority: mapPriorityToDb(args.priority) || 'medium',
           creator_id: user.id,
           due_date: args.due_date,
-          position: args.position || 0,
         }])
         .select()
         .single();
@@ -185,7 +184,6 @@ export const taskResolvers = {
       if (args.status !== undefined) updateData.status = mapStatusToDb(args.status);
       if (args.priority !== undefined) updateData.priority = mapPriorityToDb(args.priority);
       if (args.due_date !== undefined) updateData.due_date = args.due_date;
-      if (args.position !== undefined) updateData.position = args.position;
       updateData.updated_at = new Date().toISOString();
 
       const { data, error } = await supabase
@@ -242,33 +240,6 @@ export const taskResolvers = {
       
       if (error) throw new Error(error.message);
       return true;
-    },
-
-    reorderTasks: async (_, { projectId, taskIds }, { user, supabase }) => {
-      if (!user) throw new Error('No autenticado');
-
-      const updates = taskIds.map((taskId, index) => 
-        supabase
-          .from('tasks')
-          .update({ position: index })
-          .eq('id', taskId)
-          .eq('project_id', projectId)
-      );
-
-      await Promise.all(updates);
-
-      const { data, error } = await supabase
-        .from('tasks')
-        .select('*')
-        .eq('project_id', projectId)
-        .order('position', { ascending: true });
-
-      if (error) throw new Error(error.message);
-      return data.map(t => ({
-        ...t,
-        status: mapStatus(t.status),
-        priority: mapPriority(t.priority),
-      }));
     },
   },
 
