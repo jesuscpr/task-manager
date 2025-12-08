@@ -1,171 +1,369 @@
-.home {
-  position: absolute;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-left: 5px;
-  cursor: pointer;
-}
-
+/* ========================================
+   HEADER
+======================================== */
 #header {
   display: flex;
   justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  flex-shrink: 0;
 }
 
 .banner {
-  font-size: x-large;
-  font-weight: 600;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
 }
 
+/* ========================================
+   CONTENT LAYOUT
+======================================== */
 #content {
   flex: 1;
   display: flex;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  overflow: hidden;
 }
 
+/* ========================================
+   SIDEBAR
+======================================== */
 #sidebar {
   display: flex;
-  border: 1px solid black;
-  max-width: 11%;
-  min-width: 3%;
+  background: white;
+  border-right: 2px solid #e5e8ec;
+  width: 280px;
   align-items: start;
   flex-direction: column;
   justify-content: space-between;
-  transition-duration: 0.5s;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-shrink: 0;
+}
+
+#sidebar.collapsed {
+  width: 100px;
+}
+
+#sidebar.expanded {
+  width: 280px;
+}
+
+#sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 10px;
+}
+
+#sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
+}
+
+#sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 #sidebar ul li {
   list-style: none;
 }
 
-.hideShowBtn {
-  padding: 5px;
-  background-color: rgba(82, 163, 255);
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  margin: 4px;
+.arrowSlide {
+  height: 20px;
+  width: 20px;
 }
 
-.hideShowBtn:hover {
-  background-color: rgba(82, 163, 255, 0.7);
-}
-
+/* ========================================
+   BUTTONS
+======================================== */
+.hideShowBtn,
 .newProjectBtn {
-  padding: 5px;
-  margin: 4px;
-  background-color: rgba(82, 163, 255);
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
-  border-radius: 3px;
+  border-radius: 8px;
   cursor: pointer;
+  margin: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
+.hideShowBtn::before,
+.newProjectBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.hideShowBtn:hover::before,
+.newProjectBtn:hover::before {
+  left: 100%;
+}
+
+.hideShowBtn:hover,
 .newProjectBtn:hover {
-  background-color: rgba(82, 163, 255, 0.7);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.hideShowBtn:active,
+.newProjectBtn:active {
+  transform: translateY(0);
 }
 
 .projectButtons {
   display: flex;
   justify-content: space-between;
+  padding: 8px;
+  gap: 8px;
 }
 
 .justShow {
   display: flex;
   justify-content: center;
+  padding: 8px;
 }
 
+/* ========================================
+   PROJECTS LIST
+======================================== */
 #projects {
   display: flex;
   width: 100%;
   flex-direction: column;
+  padding: 8px 0;
 }
 
 .project {
-  background-color: rgb(109, 184, 255);
-  padding: 5px;
-  margin: 5px;
-  border-radius: 5px;
-  font-weight: 500;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 12px 16px;
+  margin: 6px 12px;
+  border-radius: 12px;
+  font-weight: 600;
   cursor: pointer;
+  color: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+#sidebar.collapsed .project {
+  padding: 12px 8px;
+  margin: 6px 8px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 .project:hover {
-  background-color: rgba(140, 194, 255, 0.5);
+  transform: translateX(5px) scale(1.02);
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+#sidebar.collapsed .project:hover {
+  transform: scale(1.05);
+}
+
+.project:hover::before {
+  opacity: 1;
 }
 
 .selected {
-  background-color: rgb(58, 136, 226);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateX(5px);
+  box-shadow: 0 4px 20px rgba(118, 75, 162, 0.5);
+  border: 2px solid black;
 }
 
-.selected:hover {
-  background-color: rgba(74, 144, 226, 0.7);
+#sidebar.collapsed .selected {
+  transform: scale(1.05);
 }
 
-.profile {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  padding: 5px;
+.selected::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
 }
 
+/* ========================================
+   PROFILE SECTION
+======================================== */
+.profile,
 .profileShort {
   display: flex;
   width: 100%;
-  padding: 5px;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  gap: 12px;
+  border-top: 2px solid #e5e8ec;
+  background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
 }
 
-.profileIcon {
-  width: 25px;
-  height: 25px;
+.profile {
+  flex-direction: column;
+}
+
+.profileShort {
+  justify-content: space-around;
+}
+
+.profileIcon,
+.logoutIcon {
+  width: 36px;
+  height: 36px;
   cursor: pointer;
-  border-radius: 6px;
-  margin-bottom: 5px;
+  border-radius: 20%;
+  padding: 6px;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.profileIcon:hover {
-  background-color: rgba(58, 136, 226, 0.5);
+.profileIcon:hover,
+.logoutIcon:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.settingsIcon {
-  width: 25px;
-  height: 25px;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.settingsIcon:hover {
-  background-color: rgba(58, 136, 226, 0.5);
-}
-
+/* ========================================
+   MANAGER (Main Content)
+======================================== */
 #manager {
   flex: 1;
-  border: 1px solid blue;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
+  padding: 2rem;
+  gap: 2rem;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
+#manager::-webkit-scrollbar {
+  height: 10px;
+}
+
+#manager::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+#manager::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 10px;
+}
+
+#manager::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
+}
+
+/* ========================================
+   FOOTER
+======================================== */
 #footer {
-  justify-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.9rem;
+  box-shadow: 0 -4px 20px rgba(102, 126, 234, 0.3);
+  flex-shrink: 0;
 }
 
 #footer a {
   text-decoration: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-/* Modal */
+#footer a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: white;
+  transition: width 0.3s ease;
+}
+
+#footer a:hover::after {
+  width: 100%;
+}
+
+#footer a:hover {
+  transform: translateY(-2px);
+}
+
+/* ========================================
+   MODAL (Shared styles)
+======================================== */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(5px);
 }
 
 .modal-overlay.closing {
@@ -192,13 +390,13 @@
 
 .modal-content {
   background: white;
-  padding: 2rem;
-  border-radius: 12px;
+  padding: 2.5rem;
+  border-radius: 20px;
   width: 90%;
   max-width: 500px;
   position: relative;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  animation: appear 0.3s ease-out;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: appear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .modal-content.closing {
@@ -207,22 +405,22 @@
 
 @keyframes appear {
   from {
-    transform: scale(0);
+    transform: scale(0.8) translateY(-30px);
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
     opacity: 1;
   }
 }
 
 @keyframes disappear {
   from {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
     opacity: 1;
   }
   to {
-    transform: scale(0);
+    transform: scale(0.8) translateY(-30px);
     opacity: 0;
   }
 }
@@ -237,23 +435,35 @@
   cursor: pointer;
   color: #999;
   line-height: 1;
-  transition: color 0.2s;
+  transition: all 0.3s;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-close:hover {
   color: #333;
+  background-color: #f0f0f0;
+  transform: rotate(90deg);
 }
 
 .modal-title {
   margin: 0 0 1.5rem 0;
-  font-size: 1.5rem;
-  color: #333;
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
 }
 
 .form-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .form-label {
@@ -264,18 +474,19 @@
 
 .form-textarea {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.875rem;
   border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 12px;
   font-family: inherit;
   font-size: 1rem;
   resize: vertical;
-  transition: border-color 0.2s;
+  transition: all 0.3s;
 }
 
 .form-textarea:focus {
   outline: none;
-  border-color: #4a90e2;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .modal-buttons {
@@ -287,13 +498,13 @@
 
 .btn-cancel,
 .btn-submit {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.75rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
+  transition: all 0.3s ease;
+  font-weight: 600;
 }
 
 .btn-cancel {
@@ -303,18 +514,47 @@
 
 .btn-cancel:hover {
   background-color: #e0e0e0;
+  transform: translateY(-2px);
 }
 
 .btn-submit {
-  background-color: #4a90e2;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .btn-submit:hover {
-  background-color: #357abd;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .btn-submit:disabled {
-  background-color: #ccc;
+  background: #ccc;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+@media (max-width: 768px) {
+  .banner {
+    font-size: 1.3rem;
+  }
+
+  #manager {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  #footer {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .modal-content {
+    padding: 2rem;
+  }
 }

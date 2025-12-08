@@ -5,7 +5,7 @@ import './TaskColumn.css'
 import SortableTaskCard from './SortableTaskCard'
 import iconoAdd from '../../assets/add.svg'
 
-const TaskColumn = ({ title, tasks, status, handleDelete, handleAddTask, onTaskClick }) => {
+const TaskColumn = ({ title, tasks, status, handleAddTask, onTaskClick }) => {
   // Normalizar status para comparar
   const normalizedStatus = status.toUpperCase().replace('INPROCESS', 'IN_PROGRESS')
   const statusTasks = tasks.filter(t => t.status === normalizedStatus)
@@ -65,7 +65,6 @@ const TaskColumn = ({ title, tasks, status, handleDelete, handleAddTask, onTaskC
               <SortableTaskCard
                 key={task.id}
                 task={task}
-                handleDelete={() => handleDelete(task.id)}
                 onTaskClick={onTaskClick}
               />
             ))

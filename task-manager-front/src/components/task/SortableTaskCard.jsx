@@ -2,7 +2,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import TaskCard from './TaskCard'
 
-const SortableTaskCard = ({ task, handleDelete, onTaskClick }) => {
+const SortableTaskCard = ({ task, onTaskClick }) => {
   const {
     attributes,
     listeners,
@@ -22,7 +22,6 @@ const SortableTaskCard = ({ task, handleDelete, onTaskClick }) => {
       <TaskCard
         title={task.title}
         task={task}
-        handleDelete={handleDelete}
         isDragging={isDragging}
         onTaskClick={onTaskClick}
       />

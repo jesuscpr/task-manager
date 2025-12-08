@@ -16,8 +16,10 @@ import TaskColumn from '../components/task/TaskColumn'
 import TaskCard from '../components/task/TaskCard'
 import ConfirmModal from '../components/common/ConfirmModal'
 import TaskDetailModal from '../components/task/TaskDetailModal'
-import settingsIcon from '../assets/settings.svg'
+import logoutIcon from '../assets/logout.svg'
 import profileIcon from '../assets/profile.svg'
+import leftArrow from '../assets/arrow-left.svg'
+import rightArrow from '../assets/arrow-right.svg'
 import '../App.css'
 
 function Dashboard() {
@@ -216,24 +218,23 @@ function Dashboard() {
   return (
     <>
       <header>
-        <a><span className='home'>TM</span></a>
         <nav id="header">
           <h1 className='banner'>{currentProject?.name || 'Selecciona un proyecto'}</h1>
         </nav>
       </header>
       <div id='content'>
-        <aside id="sidebar" style={{width: sideSlide ? "11%" : "3%"}}>
+        <aside id="sidebar" className={sideSlide ? 'expanded' : 'collapsed'}>
           <div id='projects'>
             <div className={sideSlide ? "projectButtons" : "justShow"}>
               <button
                 onClick={() => setIsModalOpen(true)}
                 className='newProjectBtn'
-                hidden={!sideSlide}
+                style={{ display: sideSlide ? 'block' : 'none' }}
               >
                 New Project
               </button>
               <button onClick={handleSlide} className='hideShowBtn'>
-                {sideSlide ? "hide" : "show"}
+                {sideSlide ? <img src={leftArrow} className='arrowSlide'/> : <img src={rightArrow} className='arrowSlide'/>}
               </button>
             </div>
             <ul>
@@ -251,6 +252,7 @@ function Dashboard() {
                     key={project.id}
                     className={`project ${activeProject === project.id ? "selected" : ""}`}
                     onClick={() => handleProjectChange(project.id)}
+                    title={project.name}
                   >
                     {sideSlide ? project.name : getInitials(project.name)}
                   </li>
@@ -259,12 +261,13 @@ function Dashboard() {
             </ul>
           </div>
           <div className={`${sideSlide ? 'profileShort' : 'profile'}`}>
-            <img src={profileIcon} className='profileIcon' />
+            <img src={profileIcon} className='profileIcon' alt="Perfil" />
             <img
-              src={settingsIcon}
-              className='settingsIcon'
+              src={logoutIcon}
+              className='logoutIcon'
               onClick={signOut}
               title="Cerrar sesión"
+              alt="Configuración"
             />
           </div>
 

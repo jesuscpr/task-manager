@@ -1,41 +1,161 @@
+/* ========================================
+   TASK COLUMN
+======================================== */
 .taskColumn {
-  width: 30%;
-  border: 1px solid salmon;
-  padding-inline: 5px;
+  width: 450px;
+  max-width: 550px;
+  min-width: 300px;
+  height: 100%;
+  background: white;
+  border-radius: 20px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
-.title {
-  font-weight: 600;
+.taskColumn:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
+/* ========================================
+   TITLE CONTAINER
+======================================== */
 .titleContainer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  padding: 1.5rem 1.25rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px 20px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.titleContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.title {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: white;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 1;
 }
 
 .iconoAdd {
-  height: 26px;
-  width: 26px;
+  height: 32px;
+  width: 32px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
 }
 
+.iconoAdd:hover {
+  transform: scale(1.15) rotate(90deg);
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.iconoAdd:active {
+  transform: scale(1.05) rotate(90deg);
+}
+
+/* ========================================
+   TASK LIST
+======================================== */
+.taskList {
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  flex: 1;
+  background: linear-gradient(180deg, #fafbfc 0%, #f5f7fa 100%);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.taskList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.taskList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.taskList::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 10px;
+}
+
+.taskList::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
+}
+
+.taskList.draggingOver {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  border: 3px dashed rgba(102, 126, 234, 0.4);
+  border-radius: 16px;
+  box-shadow: inset 0 0 20px rgba(102, 126, 234, 0.1);
+}
+
+/* ========================================
+   EMPTY COLUMN
+======================================== */
+.emptyColumn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: #95a5a6;
+  font-style: italic;
+  font-size: 1.05rem;
+  border: 3px dashed #dfe4ea;
+  border-radius: 16px;
+  margin: 12px 0;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, rgba(149, 165, 166, 0.03) 0%, rgba(189, 195, 199, 0.03) 100%);
+}
+
+.emptyColumn:hover {
+  border-color: #bdc3c7;
+  color: #7f8c8d;
+  background: linear-gradient(135deg, rgba(149, 165, 166, 0.06) 0%, rgba(189, 195, 199, 0.06) 100%);
+}
+
+/* ========================================
+   MODAL STYLES (Task Column specific)
+======================================== */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(5px);
 }
 
 .modal-overlay.closing {
@@ -62,13 +182,13 @@
 
 .modal-content {
   background: white;
-  padding: 2rem;
-  border-radius: 12px;
+  padding: 2.5rem;
+  border-radius: 20px;
   width: 90%;
   max-width: 500px;
   position: relative;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  animation: appear 0.3s ease-out;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: appear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .modal-content.closing {
@@ -77,22 +197,22 @@
 
 @keyframes appear {
   from {
-    transform: scale(0);
+    transform: scale(0.8) translateY(-30px);
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
     opacity: 1;
   }
 }
 
 @keyframes disappear {
   from {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
     opacity: 1;
   }
   to {
-    transform: scale(0);
+    transform: scale(0.8) translateY(-30px);
     opacity: 0;
   }
 }
@@ -107,23 +227,35 @@
   cursor: pointer;
   color: #999;
   line-height: 1;
-  transition: color 0.2s;
+  transition: all 0.3s;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-close:hover {
   color: #333;
+  background-color: #f0f0f0;
+  transform: rotate(90deg);
 }
 
 .modal-title {
   margin: 0 0 1.5rem 0;
-  font-size: 1.5rem;
-  color: #333;
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
 }
 
 .form-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .form-label {
@@ -134,18 +266,19 @@
 
 .form-textarea {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.875rem;
   border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 12px;
   font-family: inherit;
   font-size: 1rem;
   resize: vertical;
-  transition: border-color 0.2s;
+  transition: all 0.3s;
 }
 
 .form-textarea:focus {
   outline: none;
-  border-color: #4a90e2;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .modal-buttons {
@@ -157,13 +290,13 @@
 
 .btn-cancel,
 .btn-submit {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.75rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
+  transition: all 0.3s ease;
+  font-weight: 600;
 }
 
 .btn-cancel {
@@ -173,18 +306,56 @@
 
 .btn-cancel:hover {
   background-color: #e0e0e0;
+  transform: translateY(-2px);
 }
 
 .btn-submit {
-  background-color: #4a90e2;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .btn-submit:hover {
-  background-color: #357abd;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .btn-submit:disabled {
-  background-color: #ccc;
+  background: #ccc;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+@media (max-width: 1024px) {
+  .taskColumn {
+    width: 300px;
+    min-width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .taskColumn {
+    width: 280px;
+    min-width: 280px;
+  }
+
+  .titleContainer {
+    padding: 1.25rem 1rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .taskList {
+    padding: 1rem;
+  }
+
+  .modal-content {
+    padding: 2rem;
+  }
 }
