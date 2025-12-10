@@ -95,3 +95,18 @@ export const GET_LABELS = gql`
     }
   }
 `
+
+export const GET_PROJECT_MEMBERS = gql`
+  query GetProjectMembers($projectId: ID!) {
+    projectMembers(projectId: $projectId) {
+      id
+      user {
+        id
+        username
+        full_name
+        avatar_url
+      }
+      role
+    }
+  }
+`

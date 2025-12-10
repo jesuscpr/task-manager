@@ -8,8 +8,8 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import { GET_PROJECTS, GET_TASKS } from '../lib/graphql/queries'
-import { CREATE_PROJECT, CREATE_TASK, UPDATE_TASK, DELETE_TASK } from '../lib/graphql/mutations'
+import { GET_PROJECTS, GET_TASKS, GET_LABELS, GET_PROJECT_MEMBERS } from '../lib/graphql/queries'
+import { CREATE_PROJECT, CREATE_TASK, UPDATE_TASK, DELETE_TASK, ADD_LABEL_TO_TASK, ASSIGN_TASK, REMOVE_LABEL_FROM_TASK, UNASSIGN_TASK } from '../lib/graphql/mutations'
 import { useAuthStore } from '../store/authStore'
 import Footer from '../components/layout/Footer'
 import TaskColumn from '../components/task/TaskColumn'
@@ -18,8 +18,8 @@ import ConfirmModal from '../components/common/ConfirmModal'
 import TaskDetailModal from '../components/task/TaskDetailModal'
 import logoutIcon from '../assets/logout.svg'
 import profileIcon from '../assets/profile.svg'
-import leftArrow from '../assets/arrow-left.svg'
-import rightArrow from '../assets/arrow-right.svg'
+import arrowRight from '../assets/arrow-right.svg'
+import arrowLeft from '../assets/arrow-left.svg'
 import '../App.css'
 
 function Dashboard() {
@@ -53,6 +53,14 @@ function Dashboard() {
       skip: !activeProject,
     }
   )
+  const { data: labelsData } = useQuery(GET_LABELS, {
+    variables: { projectId: null, scope: "GLOBAL" },
+    skip: !activeProject,
+  })
+  const { data: membersData } = useQuery(GET_PROJECT_MEMBERS, {
+    variables: { projectId: activeProject },
+    skip: !activeProject,
+  })
 
   // Mutations
   const [createProject] = useMutation(CREATE_PROJECT, {
@@ -71,8 +79,16 @@ function Dashboard() {
     onCompleted: () => refetchTasks(),
   })
 
+  const [addLabelToTask] = useMutation(ADD_LABEL_TO_TASK)
+  const [assignTask] = useMutation(ASSIGN_TASK)
+
+  const [removeLabelsFromTask] = useMutation(REMOVE_LABEL_FROM_TASK)
+  const [unassignTask] = useMutation(UNASSIGN_TASK)
+
   const projects = projectsData?.projects || []
   const tasks = tasksData?.tasks || []
+  const labels = labelsData?.labels || []
+  const members = membersData?.projectMembers?.map(m => m.user) || []
 
   // Seleccionar primer proyecto al cargar
   useEffect(() => {
@@ -107,17 +123,42 @@ function Dashboard() {
     setActiveProject(id)
   }
 
-  const handleAddTask = async (newTask, status) => {
-    const normalizedStatus = status.toUpperCase().replace('INPROCESS', 'IN_PROGRESS')
-    
-    await createTask({
-      variables: {
-        projectId: activeProject,
-        title: newTask,
-        status: normalizedStatus,
-        priority: 'MEDIUM',
-      },
-    })
+  const handleAddTask = async (taskData) => {
+    try {
+      const { data } = await createTask({
+        variables: {
+          projectId: activeProject,
+          title: taskData.title,
+          description: taskData.description,
+          status: taskData.status,
+          priority: taskData.priority,
+          due_date: taskData.due_date || null,
+        },
+      })
+
+      // Si se creó la tarea y hay labels o usuarios seleccionados, asignarlos
+      if (data?.createTask?.id) {
+        const taskId = data.createTask.id
+        
+        // Asignar labels
+        if (taskData.labelIds && taskData.labelIds.length > 0) {
+          for (const labelId of taskData.labelIds) {
+            await addLabelToTask({ variables: { taskId, labelId } })
+          }
+        }
+        
+        // Asignar usuarios
+        if (taskData.userIds && taskData.userIds.length > 0) {
+          for (const userId of taskData.userIds) {
+            await assignTask({ variables: { taskId, userId } })
+          }
+        }
+        // Refrescar tareas después de todas las asignaciones
+        await refetchTasks()
+      }
+    } catch (error) {
+      console.error('Error al crear tarea:', error)
+    }
   }
 
   const handleSlide = () => {
@@ -144,12 +185,60 @@ function Dashboard() {
   }
 
   const handleUpdateTask = async (taskId, updates) => {
-    await updateTask({
-      variables: {
-        id: taskId,
-        ...updates,
-      },
-    })
+    try {
+      // Actualizar campos básicos de la tarea
+      await updateTask({
+        variables: {
+          id: taskId,
+          title: updates.title,
+          description: updates.description,
+          status: updates.status,
+          priority: updates.priority,
+          due_date: updates.due_date || null,
+        },
+      })
+
+      // Si hay cambios en labels
+      if (updates.labelIds) {
+        const currentTask = tasks.find(t => t.id === taskId)
+        const currentLabelIds = currentTask?.labels?.map(l => l.id) || []
+        
+        // Añadir nuevos labels
+        const labelsToAdd = updates.labelIds.filter(id => !currentLabelIds.includes(id))
+        for (const labelId of labelsToAdd) {
+          await addLabelToTask({ variables: { taskId, labelId } })
+        }
+        
+        // Remover labels que ya no están
+        const labelsToRemove = currentLabelIds.filter(id => !updates.labelIds.includes(id))
+        for (const labelId of labelsToRemove) {
+          await removeLabelsFromTask({ variables: { taskId, labelId } })
+        }
+      }
+
+      // Si hay cambios en usuarios asignados
+      if (updates.userIds) {
+        const currentTask = tasks.find(t => t.id === taskId)
+        const currentUserIds = currentTask?.assigned_to?.map(u => u.id) || []
+        
+        // Añadir nuevos usuarios
+        const usersToAdd = updates.userIds.filter(id => !currentUserIds.includes(id))
+        for (const userId of usersToAdd) {
+          await assignTask({ variables: { taskId, userId } })
+        }
+        
+        // Remover usuarios que ya no están
+        const usersToRemove = currentUserIds.filter(id => !updates.userIds.includes(id))
+        for (const userId of usersToRemove) {
+          await unassignTask({ variables: { taskId, userId } })
+        }
+      }
+
+      // Refrescar las tareas
+      await refetchTasks()
+    } catch (error) {
+      console.error('Error al actualizar tarea:', error)
+    }
   }
 
   const handleDeleteFromDetail = (taskId) => {
@@ -225,16 +314,15 @@ function Dashboard() {
       <div id='content'>
         <aside id="sidebar" className={sideSlide ? 'expanded' : 'collapsed'}>
           <div id='projects'>
-            <div className={sideSlide ? "projectButtons" : "justShow"}>
+            <div className="projectButtons">
+              <button onClick={handleSlide} className='hideShowBtn'>
+                {sideSlide ? <img src={arrowLeft} className='arrowSlide'/> : <img src={arrowRight} className='arrowSlide'/>}
+              </button>
               <button
                 onClick={() => setIsModalOpen(true)}
                 className='newProjectBtn'
-                style={{ display: sideSlide ? 'block' : 'none' }}
               >
-                New Project
-              </button>
-              <button onClick={handleSlide} className='hideShowBtn'>
-                {sideSlide ? <img src={leftArrow} className='arrowSlide'/> : <img src={rightArrow} className='arrowSlide'/>}
+                {sideSlide ? "+ Add Project" : "+"}
               </button>
             </div>
             <ul>
@@ -334,6 +422,8 @@ function Dashboard() {
                 handleDelete={handleDelete}
                 handleAddTask={handleAddTask}
                 onTaskClick={handleTaskClick}
+                availableLabels={labels}
+                availableUsers={members}
               />
               <TaskColumn
                 title={"In Process"}
@@ -342,6 +432,8 @@ function Dashboard() {
                 handleDelete={handleDelete}
                 handleAddTask={handleAddTask}
                 onTaskClick={handleTaskClick}
+                availableLabels={labels}
+                availableUsers={members}
               />
               <TaskColumn
                 title={"Done"}
@@ -350,6 +442,8 @@ function Dashboard() {
                 handleDelete={handleDelete}
                 handleAddTask={handleAddTask}
                 onTaskClick={handleTaskClick}
+                availableLabels={labels}
+                availableUsers={members}
               />
               
               <DragOverlay>
@@ -386,6 +480,8 @@ function Dashboard() {
         task={selectedTask}
         onUpdate={handleUpdateTask}
         onDelete={handleDeleteFromDetail}
+        availableLabels={labels}
+        availableUsers={members}
       />
       
       <Footer />

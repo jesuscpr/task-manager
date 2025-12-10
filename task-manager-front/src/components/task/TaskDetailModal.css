@@ -36,6 +36,9 @@
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: slideIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .task-detail-content.closing {
@@ -93,11 +96,12 @@
 .task-detail-header {
   padding: 2rem 3rem 1.5rem 2rem;
   border-bottom: 2px solid #f0f0f0;
+  flex-shrink: 0;
 }
 
 .task-detail-title {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.75rem;
   color: #2c3e50;
   font-weight: 700;
   word-wrap: break-word;
@@ -105,7 +109,7 @@
 
 .task-detail-title-input {
   width: 100%;
-  font-size: 2rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #2c3e50;
   border: 2px solid #3498db;
@@ -124,6 +128,27 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+}
+
+.task-detail-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.task-detail-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.task-detail-body::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 10px;
+}
+
+.task-detail-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
 }
 
 .task-detail-section {
@@ -182,6 +207,29 @@
 .task-detail-select:focus {
   outline: none;
   border-color: #3498db;
+}
+
+.task-detail-input {
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.task-detail-input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.task-detail-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #2c3e50;
+  font-size: 1rem;
 }
 
 .task-detail-textarea {
@@ -246,12 +294,114 @@
   font-weight: 500;
 }
 
+.task-detail-text-empty {
+  color: #95a5a6;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Edit mode - Labels */
+.task-detail-labels-edit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.label-chip {
+  padding: 0.6rem 1rem;
+  border: 2px solid;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.label-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.label-chip.selected {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Edit mode - Users */
+.task-detail-users-edit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.user-chip {
+  padding: 0.6rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #2c3e50;
+}
+
+.user-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #667eea;
+}
+
+.user-chip.selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.user-avatar-small,
+.user-avatar-placeholder-small {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-avatar-placeholder-small {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.user-chip.selected .user-avatar-placeholder-small {
+  background: white;
+  color: #667eea;
+}
+
+.check-mark {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
 .task-detail-footer {
   padding: 1.5rem 2rem;
   border-top: 2px solid #f0f0f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .task-detail-footer-right {
@@ -312,25 +462,6 @@
   background-color: #27ae60;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
-}
-
-/* Scrollbar personalizado */
-.task-detail-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.task-detail-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.task-detail-content::-webkit-scrollbar-thumb {
-  background: #bdc3c7;
-  border-radius: 10px;
-}
-
-.task-detail-content::-webkit-scrollbar-thumb:hover {
-  background: #95a5a6;
 }
 
 /* Responsive */
