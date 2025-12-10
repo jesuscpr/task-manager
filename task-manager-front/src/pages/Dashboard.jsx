@@ -301,7 +301,16 @@ function Dashboard() {
   const activeTask = tasks.find(t => t.id === activeId)
 
   if (projectsLoading) {
-    return <div>Cargando proyectos...</div>
+    return <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            fontSize: '1.5rem',
+            color: '#667eea'
+          }}>
+            Cargando proyectos...
+          </div>
   }
 
   return (
@@ -407,7 +416,16 @@ function Dashboard() {
         </aside>
         <main id="manager">
           {tasksLoading ? (
-            <div>Cargando tareas...</div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '80vh',
+              fontSize: '1.5rem',
+              color: '#667eea'
+            }}>
+              Cargando tareas...
+            </div>
           ) : (
             <DndContext
               sensors={sensors}

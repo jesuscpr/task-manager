@@ -17,6 +17,7 @@ const TaskDetailModal = ({
     description: '',
     status: '',
     priority: '',
+    due_date: '',
     selectedLabels: [],
     selectedUsers: [],
   })
@@ -251,24 +252,54 @@ const TaskDetailModal = ({
             <div className='task-detail-section full-width'>
               <label className='task-detail-label'>Etiquetas</label>
               {isEditing ? (
-                <div className='task-detail-labels-edit'>
-                  {availableLabels.map((label) => (
-                    <button
-                      key={label.id}
-                      type='button'
-                      onClick={() => toggleLabel(label.id)}
-                      className={`label-chip ${editedTask.selectedLabels.includes(label.id) ? 'selected' : ''}`}
-                      style={{
-                        backgroundColor: editedTask.selectedLabels.includes(label.id) ? label.color : 'transparent',
-                        borderColor: label.color,
-                        color: editedTask.selectedLabels.includes(label.id) ? 'white' : label.color
+                <>
+                  {/* Labels seleccionados */}
+                  {selectedLabelsData.length > 0 && (
+                    <div className='selected-items'>
+                      {selectedLabelsData.map((label) => (
+                        <div
+                          key={label.id}
+                          className='selected-label-chip'
+                          style={{ backgroundColor: label.color }}
+                        >
+                          <span>{label.name}</span>
+                          <button
+                            type='button'
+                            onClick={() => toggleLabel(label.id)}
+                            className='remove-chip-btn'
+                            title='Quitar'
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Select para añadir labels */}
+                  {availableLabels.filter(l => !editedTask.selectedLabels.includes(l.id)).length > 0 && (
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          toggleLabel(e.target.value)
+                          e.target.value = ''
+                        }
                       }}
+                      className='task-detail-select'
+                      value=''
                     >
-                      {editedTask.selectedLabels.includes(label.id) && '✓ '}
-                      {label.name}
-                    </button>
-                  ))}
-                </div>
+                      <option value=''>+ Añadir etiqueta</option>
+                      {availableLabels
+                        .filter(l => !editedTask.selectedLabels.includes(l.id))
+                        .map((label) => (
+                          <option key={label.id} value={label.id}>
+                            {label.name}
+                          </option>
+                        ))
+                      }
+                    </select>
+                  )}
+                </>
               ) : (
                 <div className='task-detail-labels'>
                   {task.labels && task.labels.length > 0 ? (
@@ -294,26 +325,60 @@ const TaskDetailModal = ({
             <div className='task-detail-section full-width'>
               <label className='task-detail-label'>Asignado a</label>
               {isEditing ? (
-                <div className='task-detail-users-edit'>
-                  {availableUsers.map((user) => (
-                    <button
-                      key={user.id}
-                      type='button'
-                      onClick={() => toggleUser(user.id)}
-                      className={`user-chip ${editedTask.selectedUsers.includes(user.id) ? 'selected' : ''}`}
-                    >
-                      {user.avatar_url ? (
-                        <img src={user.avatar_url} alt={user.username} className='user-avatar-small' />
-                      ) : (
-                        <div className='user-avatar-placeholder-small'>
-                          {user.username?.charAt(0).toUpperCase()}
+                <>
+                  {/* Usuarios seleccionados */}
+                  {selectedUsersData.length > 0 && (
+                    <div className='selected-items'>
+                      {selectedUsersData.map((user) => (
+                        <div
+                          key={user.id}
+                          className='selected-user-chip'
+                        >
+                          {user.avatar_url ? (
+                            <img src={user.avatar_url} alt={user.username} className='user-avatar-tiny' />
+                          ) : (
+                            <div className='user-avatar-placeholder-tiny'>
+                              {user.username?.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <span>{user.username}</span>
+                          <button
+                            type='button'
+                            onClick={() => toggleUser(user.id)}
+                            className='remove-chip-btn'
+                            title='Quitar'
+                          >
+                            ×
+                          </button>
                         </div>
-                      )}
-                      <span>{user.username}</span>
-                      {editedTask.selectedUsers.includes(user.id) && <span className='check-mark'>✓</span>}
-                    </button>
-                  ))}
-                </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Select para añadir usuarios */}
+                  {availableUsers.filter(u => !editedTask.selectedUsers.includes(u.id)).length > 0 && (
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          toggleUser(e.target.value)
+                          e.target.value = ''
+                        }
+                      }}
+                      className='task-detail-select'
+                      value=''
+                    >
+                      <option value=''>+ Asignar usuario</option>
+                      {availableUsers
+                        .filter(u => !editedTask.selectedUsers.includes(u.id))
+                        .map((user) => (
+                          <option key={user.id} value={user.id}>
+                            {user.username}
+                          </option>
+                        ))
+                      }
+                    </select>
+                  )}
+                </>
               ) : (
                 <div className='task-detail-assignees'>
                   {task.assigned_to && task.assigned_to.length > 0 ? (

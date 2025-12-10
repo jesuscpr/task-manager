@@ -231,24 +231,53 @@ const AddTaskModal = ({
                 <label className='add-task-label'>
                   Etiquetas
                 </label>
-                <div className='labels-grid'>
-                  {availableLabels.map((label) => (
-                    <button
-                      key={label.id}
-                      type='button'
-                      onClick={() => toggleLabel(label.id)}
-                      className={`label-chip ${formData.selectedLabels.includes(label.id) ? 'selected' : ''}`}
-                      style={{
-                        backgroundColor: formData.selectedLabels.includes(label.id) ? label.color : 'transparent',
-                        borderColor: label.color,
-                        color: formData.selectedLabels.includes(label.id) ? 'white' : label.color
-                      }}
-                    >
-                      {formData.selectedLabels.includes(label.id) && '✓ '}
-                      {label.name}
-                    </button>
-                  ))}
-                </div>
+                
+                {/* Labels seleccionados */}
+                {selectedLabelsData.length > 0 && (
+                  <div className='selected-items'>
+                    {selectedLabelsData.map((label) => (
+                      <div
+                        key={label.id}
+                        className='selected-label-chip'
+                        style={{ backgroundColor: label.color }}
+                      >
+                        <span>{label.name}</span>
+                        <button
+                          type='button'
+                          onClick={() => toggleLabel(label.id)}
+                          className='remove-chip-btn'
+                          title='Quitar'
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Select para añadir labels */}
+                {availableLabels.filter(l => !formData.selectedLabels.includes(l.id)).length > 0 && (
+                  <select
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        toggleLabel(e.target.value)
+                        e.target.value = ''
+                      }
+                    }}
+                    className='add-task-select'
+                    value=''
+                  >
+                    <option value=''>+ Añadir etiqueta</option>
+                    {availableLabels
+                      .filter(l => !formData.selectedLabels.includes(l.id))
+                      .map((label) => (
+                        <option key={label.id} value={label.id}>
+                          {label.name}
+                        </option>
+                      ))
+                    }
+                  </select>
+                )}
               </div>
             )}
 
@@ -258,26 +287,59 @@ const AddTaskModal = ({
                 <label className='add-task-label'>
                   Asignar a
                 </label>
-                <div className='users-grid'>
-                  {availableUsers.map((user) => (
-                    <button
-                      key={user.id}
-                      type='button'
-                      onClick={() => toggleUser(user.id)}
-                      className={`user-chip ${formData.selectedUsers.includes(user.id) ? 'selected' : ''}`}
-                    >
-                      {user.avatar_url ? (
-                        <img src={user.avatar_url} alt={user.username} className='user-avatar-small' />
-                      ) : (
-                        <div className='user-avatar-placeholder-small'>
-                          {user.username?.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <span>{user.username}</span>
-                      {formData.selectedUsers.includes(user.id) && <span className='check-mark'>✓</span>}
-                    </button>
-                  ))}
-                </div>
+                
+                {/* Usuarios seleccionados */}
+                {selectedUsersData.length > 0 && (
+                  <div className='selected-items'>
+                    {selectedUsersData.map((user) => (
+                      <div
+                        key={user.id}
+                        className='selected-user-chip'
+                      >
+                        {user.avatar_url ? (
+                          <img src={user.avatar_url} alt={user.username} className='user-avatar-tiny' />
+                        ) : (
+                          <div className='user-avatar-placeholder-tiny'>
+                            {user.username?.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <span>{user.username}</span>
+                        <button
+                          type='button'
+                          onClick={() => toggleUser(user.id)}
+                          className='remove-chip-btn'
+                          title='Quitar'
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Select para añadir usuarios */}
+                {availableUsers.filter(u => !formData.selectedUsers.includes(u.id)).length > 0 && (
+                  <select
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        toggleUser(e.target.value)
+                        e.target.value = ''
+                      }
+                    }}
+                    className='add-task-select'
+                    value=''
+                  >
+                    <option value=''>+ Asignar usuario</option>
+                    {availableUsers
+                      .filter(u => !formData.selectedUsers.includes(u.id))
+                      .map((user) => (
+                        <option key={user.id} value={user.id}>
+                          {user.username}
+                        </option>
+                      ))
+                    }
+                  </select>
+                )}
               </div>
             )}
           </div>
