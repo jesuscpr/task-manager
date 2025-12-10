@@ -86,6 +86,35 @@ export const GET_TASKS = gql`
   }
 `
 
+export const GET_TASK = gql`
+  query GetTask($id: ID!) {
+    task(id: $id) {
+      id
+      title
+      description
+      status
+      priority
+      due_date
+      creator {
+        id
+        username
+      }
+      assigned_to {
+        id
+        username
+        avatar_url
+      }
+      labels {
+        id
+        name
+        color
+      }
+      created_at
+      updated_at
+    }
+  }
+`
+
 export const GET_LABELS = gql`
   query GetLabels($projectId: ID, $scope: LabelScope) {
     labels(projectId: $projectId, scope: $scope) {

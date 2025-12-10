@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import './TaskDetailModal.css'
+import { useQuery } from '@apollo/client'
+import { GET_TASK } from '../../lib/graphql/queries'
 
 const TaskDetailModal = ({ 
   isOpen, 
@@ -22,27 +24,37 @@ const TaskDetailModal = ({
     selectedUsers: [],
   })
 
+  const { data: taskData } = useQuery(
+    GET_TASK,
+    {
+      variables: { id: task?.id },
+      skip: !task,
+    }
+  )
+
+  const updatedData = taskData?.task
+
   useEffect(() => {
-    if (task) {
+    if (updatedData) {
       // Formatear fecha para input datetime-local
       let formattedDate = ''
-      if (task.due_date) {
-        const date = new Date(task.due_date)
+      if (updatedData.due_date) {
+        const date = new Date(updatedData.due_date)
         // Formato: YYYY-MM-DDTHH:mm
         formattedDate = date.toISOString().slice(0, 16)
       }
 
       setEditedTask({
-        title: task.title || '',
-        description: task.description || '',
-        status: task.status || 'TODO',
-        priority: task.priority || 'MEDIUM',
+        title: updatedData.title || '',
+        description: updatedData.description || '',
+        status: updatedData.status || 'TODO',
+        priority: updatedData.priority || 'MEDIUM',
         due_date: formattedDate,
-        selectedLabels: task.labels?.map(l => l.id) || [],
-        selectedUsers: task.assigned_to?.map(u => u.id) || [],
+        selectedLabels: updatedData.labels?.map(l => l.id) || [],
+        selectedUsers: updatedData.assigned_to?.map(u => u.id) || [],
       })
     }
-  }, [task])
+  }, [updatedData])
 
   useEffect(() => {
     if (!isOpen) {
@@ -148,7 +160,7 @@ const TaskDetailModal = ({
               />
             </div>
           ) : (
-            <h2 className='task-detail-title'>{task.title}</h2>
+            <h2 className='task-detail-title'>{updatedData?.title}</h2>
           )}
         </div>
 
@@ -168,7 +180,7 @@ const TaskDetailModal = ({
               </select>
             ) : (
               <div className='task-detail-badge status'>
-                {statusMap[task.status]}
+                {statusMap[updatedData?.status]}
               </div>
             )}
           </div>
@@ -182,7 +194,7 @@ const TaskDetailModal = ({
                 onChange={(e) => setEditedTask({ ...editedTask, priority: e.target.value })}
                 className='task-detail-select'
                 style={{
-                  borderLeft: `4px solid ${priorityColors[editedTask.priority]}`
+                  border: `2px solid ${priorityColors[editedTask.priority]}`
                 }}
               >
                 <option value="LOW">Baja</option>
@@ -193,9 +205,9 @@ const TaskDetailModal = ({
             ) : (
               <div 
                 className='task-detail-badge priority'
-                style={{ backgroundColor: priorityColors[task.priority] }}
+                style={{ backgroundColor: priorityColors[updatedData?.priority] }}
               >
-                {priorityMap[task.priority]}
+                {priorityMap[updatedData?.priority]}
               </div>
             )}
           </div>
@@ -213,7 +225,7 @@ const TaskDetailModal = ({
               />
             ) : (
               <p className='task-detail-text'>
-                {task.description || 'Sin descripción'}
+                {updatedData?.description || 'Sin descripción'}
               </p>
             )}
           </div>
@@ -230,9 +242,9 @@ const TaskDetailModal = ({
               />
             ) : (
               <div className='task-detail-date'>
-                {task.due_date ? (
+                {updatedData?.due_date ? (
                   <>
-                    📅 {new Date(task.due_date).toLocaleDateString('es-ES', {
+                    {new Date(updatedData?.due_date).toLocaleDateString('es-ES', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
@@ -302,8 +314,8 @@ const TaskDetailModal = ({
                 </>
               ) : (
                 <div className='task-detail-labels'>
-                  {task.labels && task.labels.length > 0 ? (
-                    task.labels.map((label) => (
+                  {updatedData?.labels && updatedData?.labels.length > 0 ? (
+                    updatedData?.labels.map((label) => (
                       <span 
                         key={label.id} 
                         className='task-detail-label-badge'
@@ -381,8 +393,8 @@ const TaskDetailModal = ({
                 </>
               ) : (
                 <div className='task-detail-assignees'>
-                  {task.assigned_to && task.assigned_to.length > 0 ? (
-                    task.assigned_to.map((user) => (
+                  {updatedData?.assigned_to && updatedData?.assigned_to.length > 0 ? (
+                    updatedData?.assigned_to.map((user) => (
                       <div key={user.id} className='task-detail-assignee'>
                         {user.avatar_url ? (
                           <img src={user.avatar_url} alt={user.username} className='assignee-avatar' />
@@ -403,10 +415,10 @@ const TaskDetailModal = ({
           )}
 
           {/* Creado por */}
-          {task.creator && (
+          {updatedData?.creator && (
             <div className='task-detail-section'>
               <label className='task-detail-label'>Creado por</label>
-              <p className='task-detail-text'>{task.creator.username}</p>
+              <p className='task-detail-text'>{updatedData?.creator.username}</p>
             </div>
           )}
 
@@ -414,7 +426,7 @@ const TaskDetailModal = ({
           <div className='task-detail-section'>
             <label className='task-detail-label'>Fecha de creación</label>
             <p className='task-detail-text'>
-              {new Date(task.created_at).toLocaleDateString('es-ES', {
+              {new Date(updatedData?.created_at).toLocaleDateString('es-ES', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
