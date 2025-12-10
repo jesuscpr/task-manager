@@ -38,6 +38,29 @@ export const SIGN_OUT = gql`
   }
 `
 
+export const UPDATE_PROFILE = gql`
+  mutation UpdateProfile(
+    $username: String
+    $full_name: String
+    $avatar_url: String
+    $bio: String
+  ) {
+    updateProfile(
+      username: $username
+      full_name: $full_name
+      avatar_url: $avatar_url
+      bio: $bio
+    ) {
+      id
+      email
+      username
+      full_name
+      avatar_url
+      bio
+    }
+  }
+`
+
 // =====================================================
 // PROJECT MUTATIONS
 // =====================================================

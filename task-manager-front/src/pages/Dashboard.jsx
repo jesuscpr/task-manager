@@ -8,14 +8,15 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import { GET_PROJECTS, GET_TASKS, GET_LABELS, GET_PROJECT_MEMBERS } from '../lib/graphql/queries'
-import { CREATE_PROJECT, CREATE_TASK, UPDATE_TASK, DELETE_TASK, ADD_LABEL_TO_TASK, ASSIGN_TASK, REMOVE_LABEL_FROM_TASK, UNASSIGN_TASK } from '../lib/graphql/mutations'
+import { GET_PROJECTS, GET_TASKS, GET_LABELS, GET_PROJECT_MEMBERS, GET_ME } from '../lib/graphql/queries'
+import { CREATE_PROJECT, CREATE_TASK, UPDATE_TASK, DELETE_TASK, ADD_LABEL_TO_TASK, ASSIGN_TASK, REMOVE_LABEL_FROM_TASK, UNASSIGN_TASK, UPDATE_PROFILE } from '../lib/graphql/mutations'
 import { useAuthStore } from '../store/authStore'
 import Footer from '../components/layout/Footer'
 import TaskColumn from '../components/task/TaskColumn'
 import TaskCard from '../components/task/TaskCard'
 import ConfirmModal from '../components/common/ConfirmModal'
 import TaskDetailModal from '../components/task/TaskDetailModal'
+import ProfileModal from '../components/profile/ProfileModal'
 import logoutIcon from '../assets/logout.svg'
 import profileIcon from '../assets/profile.svg'
 import arrowRight from '../assets/arrow-right.svg'
@@ -34,6 +35,7 @@ function Dashboard() {
   const [taskToDelete, setTaskToDelete] = useState(null)
   const [selectedTask, setSelectedTask] = useState(null)
   const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false)
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
 
   // Configurar sensores para el drag
   const sensors = useSensors(
@@ -84,6 +86,10 @@ function Dashboard() {
 
   const [removeLabelsFromTask] = useMutation(REMOVE_LABEL_FROM_TASK)
   const [unassignTask] = useMutation(UNASSIGN_TASK)
+
+  const [updateProfile] = useMutation(UPDATE_PROFILE, {
+    refetchQueries: [{ query: GET_ME }],
+  })
 
   const projects = projectsData?.projects || []
   const tasks = tasksData?.tasks || []
@@ -247,6 +253,16 @@ function Dashboard() {
     handleDelete(taskId)
   }
 
+  const handleUpdateProfile = async (profileData) => {
+    try {
+      await updateProfile({
+        variables: profileData,
+      })
+    } catch (error) {
+      console.error('Error al actualizar perfil:', error)
+    }
+  }
+
   const handleDragStart = (event) => {
     setActiveId(event.active.id)
   }
@@ -358,7 +374,12 @@ function Dashboard() {
             </ul>
           </div>
           <div className={`${sideSlide ? 'profileShort' : 'profile'}`}>
-            <img src={profileIcon} className='profileIcon' alt="Perfil" />
+            <img
+              src={profileIcon}
+              className='profileIcon'
+              alt="Perfil"
+              onClick={() => setIsProfileModalOpen(true)}
+            />
             <img
               src={logoutIcon}
               className='logoutIcon'
@@ -500,6 +521,12 @@ function Dashboard() {
         onDelete={handleDeleteFromDetail}
         availableLabels={labels}
         availableUsers={members}
+      />
+
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        onUpdate={handleUpdateProfile}
       />
       
       <Footer />

@@ -8,6 +8,7 @@ export const GET_ME = gql`
       username
       full_name
       avatar_url
+      bio
     }
   }
 `
