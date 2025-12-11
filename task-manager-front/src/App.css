@@ -183,6 +183,7 @@
 .project-details-settings:hover {
   transform: scale(1.1) translateY(8px) rotateZ(10deg);
   background-color: rgba(216, 216, 216, 0.5);
+  cursor: pointer;
 }
 
 #sidebar.collapsed .project {
