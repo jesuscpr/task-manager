@@ -40,6 +40,7 @@ export const GET_PROJECT = gql`
         id
         username
         full_name
+        avatar_url
       }
       members {
         id
@@ -137,6 +138,18 @@ export const GET_PROJECT_MEMBERS = gql`
         avatar_url
       }
       role
+    }
+  }
+`
+
+export const SEARCH_USERS = gql`
+  query SearchUsers($query: String!) {
+    searchUsers(query: $query) {
+      id
+      email
+      username
+      full_name
+      avatar_url
     }
   }
 `

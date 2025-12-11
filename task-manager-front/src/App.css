@@ -170,6 +170,21 @@
   text-align: center;
 }
 
+.project-details-settings {
+  margin-left: 10px;
+  padding: 1px;
+  width: 35px;
+  border: 2px solid rgba(216, 216, 216, 0.5);
+  border-radius: 20%;
+  transform: translateY(8px);
+  transition: transform 0.3s;
+}
+
+.project-details-settings:hover {
+  transform: scale(1.1) translateY(8px) rotateZ(10deg);
+  background-color: rgba(216, 216, 216, 0.5);
+}
+
 #sidebar.collapsed .project {
   padding: 12px 8px;
   margin: 6px 8px;

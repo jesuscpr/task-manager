@@ -234,6 +234,15 @@ export const REMOVE_PROJECT_MEMBER = gql`
   }
 `
 
+export const UPDATE_PROJECT_MEMBER_ROLE = gql`
+  mutation UpdateProjectMemberRole($projectId: ID!, $userId: ID!, $role: ProjectRole!) {
+    updateProjectMemberRole(projectId: $projectId, userId: $userId, role: $role) {
+      id
+      role
+    }
+  }
+`
+
 // =====================================================
 // COMMENT MUTATIONS
 // =====================================================

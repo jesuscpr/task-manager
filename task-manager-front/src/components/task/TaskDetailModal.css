@@ -306,7 +306,7 @@
   gap: 0.5rem;
   margin-bottom: 0.75rem;
   padding: 0.75rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 20%);
+  background-color: #c3cfe2;
   border-radius: 12px;
   min-height: 50px;
   align-items: center;

@@ -216,7 +216,7 @@
   flex-direction: column;
   gap: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 20%);
+  background-color: #c3cfe2;
   border-radius: 12px;
   border: 2px solid #e5e8ec;
 }
@@ -229,7 +229,7 @@
 
 .info-label {
   font-weight: 600;
-  color: #7f8c8d;
+  color: #2c3e50;
   font-size: 0.9rem;
 }
 

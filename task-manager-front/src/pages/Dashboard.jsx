@@ -17,10 +17,12 @@ import TaskCard from '../components/task/TaskCard'
 import ConfirmModal from '../components/common/ConfirmModal'
 import TaskDetailModal from '../components/task/TaskDetailModal'
 import ProfileModal from '../components/profile/ProfileModal'
+import ProjectDetailModal from '../components/project/ProjectDetailModal'
 import logoutIcon from '../assets/logout.svg'
 import profileIcon from '../assets/profile.svg'
 import arrowRight from '../assets/arrow-right.svg'
 import arrowLeft from '../assets/arrow-left.svg'
+import settingsIcon from '../assets/settings.svg'
 import '../App.css'
 
 function Dashboard() {
@@ -36,6 +38,7 @@ function Dashboard() {
   const [selectedTask, setSelectedTask] = useState(null)
   const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+  const [isProjectDetailOpen, setIsProjectDetailOpen] = useState(false)
 
   // Configurar sensores para el drag
   const sensors = useSensors(
@@ -127,6 +130,12 @@ function Dashboard() {
 
   const handleProjectChange = (id) => {
     setActiveProject(id)
+  }
+
+  const handleProjectDeleted = () => {
+    setActiveProject(null)
+    // Recargar proyectos
+    window.location.reload()
   }
 
   const handleAddTask = async (taskData) => {
@@ -333,7 +342,14 @@ function Dashboard() {
     <>
       <header>
         <nav id="header">
-          <h1 className='banner'>{currentProject?.name || 'Selecciona un proyecto'}</h1>
+          <h1 className='banner'>
+            {currentProject?.name || 'Selecciona un proyecto'}
+            <img
+              src={settingsIcon}
+              onClick={() => setIsProjectDetailOpen(true)}
+              className='project-details-settings'
+            />
+          </h1>
         </nav>
       </header>
       <div id='content'>
@@ -527,6 +543,13 @@ function Dashboard() {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         onUpdate={handleUpdateProfile}
+      />
+
+      <ProjectDetailModal
+        isOpen={isProjectDetailOpen}
+        onClose={() => setIsProjectDetailOpen(false)}
+        projectId={activeProject}
+        onProjectDeleted={handleProjectDeleted}
       />
       
       <Footer />
