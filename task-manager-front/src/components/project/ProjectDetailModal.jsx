@@ -345,7 +345,7 @@ const ProjectDetailModal = ({ isOpen, onClose, projectId, onProjectDeleted }) =>
                           value={member.role}
                           onChange={(e) => handleChangeRole(member.user.id, e.target.value)}
                           className='member-role-select'
-                          style={{ borderLeft: `4px solid ${roleColors[member.role]}` }}
+                          style={{ border: `2px solid ${roleColors[member.role]}` }}
                         >
                           <option value='VIEWER'>Visualizador</option>
                           <option value='MEMBER'>Miembro</option>

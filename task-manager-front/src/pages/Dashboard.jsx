@@ -344,11 +344,13 @@ function Dashboard() {
         <nav id="header">
           <h1 className='banner'>
             {currentProject?.name || 'Selecciona un proyecto'}
-            <img
-              src={settingsIcon}
-              onClick={() => setIsProjectDetailOpen(true)}
-              className='project-details-settings'
-            />
+            {activeProject && (
+              <img
+                src={settingsIcon}
+                onClick={() => setIsProjectDetailOpen(true)}
+                className='project-details-settings'
+              />
+            )}
           </h1>
         </nav>
       </header>
@@ -426,7 +428,7 @@ function Dashboard() {
                     onChange={(e) => setNewProjectText(e.target.value)}
                     placeholder='Escribe el nombre del proyecto aquí...'
                     className='form-textarea'
-                    rows='4'
+                    rows='1'
                     autoFocus
                   />
 
