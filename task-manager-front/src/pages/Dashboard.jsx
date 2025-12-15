@@ -18,6 +18,7 @@ import ConfirmModal from '../components/common/ConfirmModal'
 import TaskDetailModal from '../components/task/TaskDetailModal'
 import ProfileModal from '../components/profile/ProfileModal'
 import ProjectDetailModal from '../components/project/ProjectDetailModal'
+import CreateProjectModal from '../components/project/CreateProjectModal'
 import logoutIcon from '../assets/logout.svg'
 import profileIcon from '../assets/profile.svg'
 import arrowRight from '../assets/arrow-right.svg'
@@ -30,8 +31,6 @@ function Dashboard() {
   const [sideSlide, setSideSlide] = useState(true)
   const [activeProject, setActiveProject] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isClosing, setIsClosing] = useState(false)
-  const [newProjectText, setNewProjectText] = useState('')
   const [activeId, setActiveId] = useState(null)
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false)
   const [taskToDelete, setTaskToDelete] = useState(null)
@@ -106,26 +105,11 @@ function Dashboard() {
     }
   }, [projects, activeProject])
 
-  const handleCloseModal = () => {
-    setIsClosing(true)
-    setTimeout(() => {
-      setIsModalOpen(false)
-      setIsClosing(false)
-    }, 300)
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (newProjectText.trim()) {
-      await createProject({
-        variables: {
-          name: newProjectText,
-          description: '',
-        },
-      })
-      setNewProjectText('')
-      handleCloseModal()
-    }
+  const handleProjectCreated = (project) => {
+    // Establecer el nuevo proyecto como activo
+    setActiveProject(project.id)
+    // Recargar pantalla para que aparezca el nuevo proyecto
+    window.location.reload()
   }
 
   const handleProjectChange = (id) => {
@@ -406,53 +390,14 @@ function Dashboard() {
               alt="Configuración"
             />
           </div>
-
-          {isModalOpen && (
-            <div
-              className={`modal-overlay ${isClosing ? 'closing' : ''}`}
-              onClick={handleCloseModal}
-            >
-              <div
-                className={`modal-content ${isClosing ? 'closing' : ''}`}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button className='modal-close' onClick={handleCloseModal}>
-                  &times;
-                </button>
-                <h3 className='modal-title'>Añadir nuevo proyecto</h3>
-
-                <div className='form-container'>
-                  <label className='form-label'>Nombre del proyecto</label>
-                  <textarea
-                    value={newProjectText}
-                    onChange={(e) => setNewProjectText(e.target.value)}
-                    placeholder='Escribe el nombre del proyecto aquí...'
-                    className='form-textarea'
-                    rows='1'
-                    autoFocus
-                  />
-
-                  <div className='modal-buttons'>
-                    <button
-                      type='button'
-                      onClick={handleCloseModal}
-                      className='btn-cancel'
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      onClick={handleSubmit}
-                      className='btn-submit'
-                      disabled={!newProjectText.trim()}
-                    >
-                      Añadir Proyecto
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </aside>
+
+        <CreateProjectModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onProjectCreated={handleProjectCreated}
+        />
+
         <main id="manager">
           {tasksLoading ? (
             <div style={{
