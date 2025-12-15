@@ -71,38 +71,14 @@
   line-height: 1.5;
 }
 
-/* ========================================
-   DELETE BUTTON
-======================================== */
-.taskDelete {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: 8px;
+.taskAssigned {
   position: absolute;
-  bottom: 12px;
-  right: 12px;
-}
-
-.iconoDelete {
-  height: 28px;
-  width: 28px;
-  padding: 6px;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.iconoDelete:hover {
-  opacity: 1;
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-  transform: scale(1.15) rotate(10deg);
-  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-}
-
-.iconoDelete:active {
-  transform: scale(1.05) rotate(5deg);
+  right: 15px;
+  bottom: 8px;
+  color: #2c3e50;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 /* ========================================
