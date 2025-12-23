@@ -98,10 +98,24 @@ function Dashboard() {
   const labels = labelsData?.labels || []
   const members = membersData?.projectMembers?.map(m => m.user) || []
 
-  // Seleccionar primer proyecto al cargar
+  // Cargar el proyecto activo del local storage
   useEffect(() => {
-    if (projects.length > 0 && !activeProject) {
-      setActiveProject(projects[0].id)
+    if (projects.length > 0) {
+      // Intentar recuperar el proyecto guardado del localStorage
+      const savedProjectId = localStorage.getItem('activeProjectId')
+      
+      if (savedProjectId) {
+        // Verificar que el proyecto guardado todavía existe
+        const projectExists = projects.some(p => p.id === savedProjectId)
+        
+        if (projectExists) {
+          setActiveProject(savedProjectId)
+        } else {
+          // Si no existe, usar el primero y actualizar localStorage
+          setActiveProject(null)
+          localStorage.removeItem('activeProjectId')
+        }
+      }
     }
   }, [projects, activeProject])
 
@@ -114,6 +128,7 @@ function Dashboard() {
 
   const handleProjectChange = (id) => {
     setActiveProject(id)
+    localStorage.setItem('activeProjectId', id)
   }
 
   const handleProjectDeleted = () => {
@@ -399,7 +414,18 @@ function Dashboard() {
         />
 
         <main id="manager">
-          {tasksLoading ? (
+          {!activeProject ? (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '80vh',
+              fontSize: '1.5rem',
+              color: '#667eea'
+            }}>
+              Selecciona o crea un proyecto
+            </div>
+          ) : tasksLoading ? (
             <div style={{
               display: 'flex',
               justifyContent: 'center',
