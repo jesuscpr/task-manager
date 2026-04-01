@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "dev": "concurrently -n FRONT,BACK -c blue,green --kill-others-on-fail --success=all \"npm run dev --prefix task-manager-front\" \"npm run dev --prefix task-manager-back\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
