@@ -1,4 +1,4 @@
-import { useSortable } from '@dnd-kit/sortable'
+import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import TaskCard from './TaskCard'
 
@@ -8,13 +8,13 @@ const SortableTaskCard = ({ task, onTaskClick }) => {
     listeners,
     setNodeRef,
     transform,
-    transition,
     isDragging,
-  } = useSortable({ id: task.id })
+  } = useDraggable({ id: task.id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    // Oculta la tarjeta original mientras se muestra el DragOverlay
+    opacity: isDragging ? 0 : 1,
   }
 
   return (
@@ -22,7 +22,7 @@ const SortableTaskCard = ({ task, onTaskClick }) => {
       <TaskCard
         title={task.title}
         task={task}
-        isDragging={isDragging}
+        isDragging={false}
         onTaskClick={onTaskClick}
       />
     </div>

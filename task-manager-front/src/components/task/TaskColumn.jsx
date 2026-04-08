@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useDroppable } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import './TaskColumn.css'
 import SortableTaskCard from './SortableTaskCard'
 import AddTaskModal from './AddTaskModal'
@@ -38,25 +37,19 @@ const TaskColumn = ({ title, tasks, status, handleDelete, handleAddTask, onTaskC
         ref={setNodeRef}
         className={`taskList ${isOver ? 'draggingOver' : ''}`}
       >
-        <SortableContext
-          items={statusTasks.map(t => t.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          {statusTasks.length === 0 ? (
-            <div className="emptyColumn">
-              Arrastra tareas aquí o crea una nueva
-            </div>
-          ) : (
-            statusTasks.map((task) => (
-              <SortableTaskCard
-                key={task.id}
-                task={task}
-                handleDelete={() => handleDelete(task.id)}
-                onTaskClick={onTaskClick}
-              />
-            ))
-          )}
-        </SortableContext>
+        {statusTasks.length === 0 ? (
+          <div className="emptyColumn">
+            Arrastra tareas aquí o crea una nueva
+          </div>
+        ) : (
+          statusTasks.map((task) => (
+            <SortableTaskCard
+              key={task.id}
+              task={task}
+              onTaskClick={onTaskClick}
+            />
+          ))
+        )}
       </div>
 
       <AddTaskModal
