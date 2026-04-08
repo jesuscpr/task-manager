@@ -5,7 +5,7 @@ import SortableTaskCard from './SortableTaskCard'
 import AddTaskModal from './AddTaskModal'
 import iconoAdd from '../../assets/add.svg'
 
-const TaskColumn = ({ title, tasks, status, handleDelete, handleAddTask, onTaskClick, availableLabels, availableUsers }) => {
+const TaskColumn = ({ title, tasks, status, isDropTarget = false, handleDelete, handleAddTask, onTaskClick, availableLabels, availableUsers }) => {
   // Normalizar status para comparar
   const normalizedStatus = status.toUpperCase().replace('INPROCESS', 'IN_PROGRESS')
   const statusTasks = tasks.filter(t => t.status === normalizedStatus)
@@ -35,7 +35,7 @@ const TaskColumn = ({ title, tasks, status, handleDelete, handleAddTask, onTaskC
       
       <div
         ref={setNodeRef}
-        className={`taskList ${isOver ? 'draggingOver' : ''}`}
+        className={`taskList ${(isOver || isDropTarget) ? 'draggingOver' : ''}`}
       >
         {statusTasks.length === 0 ? (
           <div className="emptyColumn">

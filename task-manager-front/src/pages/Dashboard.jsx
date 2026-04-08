@@ -38,6 +38,7 @@ function Dashboard() {
   const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isProjectDetailOpen, setIsProjectDetailOpen] = useState(false)
+  const [overColumnId, setOverColumnId] = useState(null)
 
   // Configurar sensores para el drag
   const sensors = useSensors(
@@ -275,9 +276,34 @@ function Dashboard() {
     setActiveId(event.active.id)
   }
 
+  const resolveColumnIdFromOver = (overId) => {
+    if (overId === 'todo' || overId === 'inprocess' || overId === 'done') {
+      return overId
+    }
+
+    const overTask = tasks.find(t => t.id === overId)
+    if (!overTask) return null
+
+    if (overTask.status === 'TODO') return 'todo'
+    if (overTask.status === 'IN_PROGRESS') return 'inprocess'
+    if (overTask.status === 'DONE') return 'done'
+    return null
+  }
+
+  const handleDragOver = (event) => {
+    const overId = event.over?.id
+    if (!overId) {
+      setOverColumnId(null)
+      return
+    }
+
+    setOverColumnId(resolveColumnIdFromOver(overId))
+  }
+
   const handleDragEnd = async (event) => {
     const { active, over } = event
     setActiveId(null)
+    setOverColumnId(null)
 
     if (!over) return
 
@@ -441,12 +467,14 @@ function Dashboard() {
               sensors={sensors}
               collisionDetection={closestCorners}
               onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
               onDragEnd={handleDragEnd}
             >
               <TaskColumn
                 title={"To Do"}
                 tasks={tasks}
                 status={"todo"}
+                isDropTarget={overColumnId === 'todo'}
                 handleDelete={handleDelete}
                 handleAddTask={handleAddTask}
                 onTaskClick={handleTaskClick}
@@ -457,6 +485,7 @@ function Dashboard() {
                 title={"In Process"}
                 tasks={tasks}
                 status={"inprocess"}
+                isDropTarget={overColumnId === 'inprocess'}
                 handleDelete={handleDelete}
                 handleAddTask={handleAddTask}
                 onTaskClick={handleTaskClick}
@@ -467,6 +496,7 @@ function Dashboard() {
                 title={"Done"}
                 tasks={tasks}
                 status={"done"}
+                isDropTarget={overColumnId === 'done'}
                 handleDelete={handleDelete}
                 handleAddTask={handleAddTask}
                 onTaskClick={handleTaskClick}
