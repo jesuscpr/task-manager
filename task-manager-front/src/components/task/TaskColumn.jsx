@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useDroppable } from '@dnd-kit/core'
 import './TaskColumn.css'
-import SortableTaskCard from './SortableTaskCard'
+import DraggableTaskCard from './DraggableTaskCard'
 import AddTaskModal from './AddTaskModal'
 import iconoAdd from '../../assets/add.svg'
 
@@ -43,7 +43,7 @@ const TaskColumn = ({ title, tasks, status, isDropTarget = false, handleDelete, 
           </div>
         ) : (
           statusTasks.map((task) => (
-            <SortableTaskCard
+            <DraggableTaskCard
               key={task.id}
               task={task}
               onTaskClick={onTaskClick}

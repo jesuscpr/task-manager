@@ -2,7 +2,7 @@ import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import TaskCard from './TaskCard'
 
-const SortableTaskCard = ({ task, onTaskClick }) => {
+const DraggableTaskCard = ({ task, onTaskClick }) => {
   const {
     attributes,
     listeners,
@@ -29,4 +29,4 @@ const SortableTaskCard = ({ task, onTaskClick }) => {
   )
 }
 
-export default SortableTaskCard
+export default DraggableTaskCard
