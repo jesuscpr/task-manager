@@ -10,7 +10,8 @@ const TaskDetailModal = ({
   onUpdate,
   onDelete,
   availableLabels = [],
-  availableUsers = []
+  availableUsers = [],
+  disableTaskQuery = false
 }) => {
   const [isClosing, setIsClosing] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -28,11 +29,11 @@ const TaskDetailModal = ({
     GET_TASK,
     {
       variables: { id: task?.id },
-      skip: !task,
+      skip: !task || disableTaskQuery,
     }
   )
 
-  const updatedData = taskData?.task
+  const updatedData = disableTaskQuery ? task : (taskData?.task || task)
 
   useEffect(() => {
     if (updatedData) {

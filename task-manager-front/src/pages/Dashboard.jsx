@@ -430,6 +430,15 @@ function Dashboard() {
 
     // Si cambió de status, actualizar
     if (activeTask.status !== destStatus) {
+      const previousStatus = activeTask.status
+      const optimisticMovedTask = { ...activeTask, status: destStatus }
+
+      // Actualizar UI de forma optimista para mejorar la animación entre columnas
+      setOptimisticTasks((prev) => {
+        const withoutCurrent = prev.filter((task) => task.id !== activeTask.id)
+        return [optimisticMovedTask, ...withoutCurrent]
+      })
+
       try {
         await updateTask({
           variables: {
@@ -437,8 +446,15 @@ function Dashboard() {
             status: destStatus,
           },
         })
+        await refetchTasks()
+        setOptimisticTasks((prev) => prev.filter((task) => task.id !== activeTask.id))
       } catch (error) {
         console.error('Error al mover tarea:', error)
+        // Rollback visual si falla la actualización en el servidor
+        setOptimisticTasks((prev) => {
+          const withoutCurrent = prev.filter((task) => task.id !== activeTask.id)
+          return [{ ...activeTask, status: previousStatus }, ...withoutCurrent]
+        })
         refetchTasks()
       }
     }
