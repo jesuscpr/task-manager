@@ -15,6 +15,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@supabase/supabase-js": "^2.81.1",
+    "apollo3-cache-persist": "^0.15.0",
     "graphql": "^16.12.0",
     "lucide-react": "^0.553.0",
     "react": "^19.1.1",

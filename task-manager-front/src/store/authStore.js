@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
+import { clearApolloCache } from '../lib/apollo'
 
 export const useAuthStore = create((set) => ({
   user: null,
@@ -29,6 +30,7 @@ export const useAuthStore = create((set) => ({
   // Cerrar sesión
   signOut: async () => {
     await supabase.auth.signOut()
+    await clearApolloCache()
     set({ user: null, session: null })
   },
 }))

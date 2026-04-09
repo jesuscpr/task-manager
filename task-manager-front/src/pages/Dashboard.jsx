@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import {
   DndContext,
@@ -15,6 +15,7 @@ import Footer from '../components/layout/Footer'
 import TaskColumn from '../components/task/TaskColumn'
 import TaskCard from '../components/task/TaskCard'
 import ConfirmModal from '../components/common/ConfirmModal'
+import TaskErrorModal from '../components/common/TaskErrorModal'
 import TaskDetailModal from '../components/task/TaskDetailModal'
 import ProfileModal from '../components/profile/ProfileModal'
 import ProjectDetailModal from '../components/project/ProjectDetailModal'
@@ -39,6 +40,14 @@ function Dashboard() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isProjectDetailOpen, setIsProjectDetailOpen] = useState(false)
   const [overColumnId, setOverColumnId] = useState(null)
+  const [optimisticTasks, setOptimisticTasks] = useState([])
+  const [optimisticDeletedTaskIds, setOptimisticDeletedTaskIds] = useState([])
+  const [taskErrorModal, setTaskErrorModal] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    onRetry: null,
+  })
 
   // Configurar sensores para el drag
   const sensors = useSensors(
@@ -72,17 +81,13 @@ function Dashboard() {
     refetchQueries: [{ query: GET_PROJECTS }],
   })
 
-  const [createTask] = useMutation(CREATE_TASK, {
-    onCompleted: () => refetchTasks(),
-  })
+  const [createTask] = useMutation(CREATE_TASK)
 
   const [updateTask] = useMutation(UPDATE_TASK, {
     onCompleted: () => refetchTasks(),
   })
 
-  const [deleteTask] = useMutation(DELETE_TASK, {
-    onCompleted: () => refetchTasks(),
-  })
+  const [deleteTask] = useMutation(DELETE_TASK)
 
   const [addLabelToTask] = useMutation(ADD_LABEL_TO_TASK)
   const [assignTask] = useMutation(ASSIGN_TASK)
@@ -98,6 +103,36 @@ function Dashboard() {
   const tasks = tasksData?.tasks || []
   const labels = labelsData?.labels || []
   const members = membersData?.projectMembers?.map(m => m.user) || []
+  const allTasks = useMemo(() => {
+    const merged = [...optimisticTasks, ...tasks]
+      .filter((task) => !optimisticDeletedTaskIds.includes(task.id))
+    return merged.filter((task, index, arr) => index === arr.findIndex((t) => t.id === task.id))
+  }, [optimisticTasks, tasks, optimisticDeletedTaskIds])
+
+  const extractErrorMessage = (error) => {
+    const graphQLErrorMessage = error?.graphQLErrors?.[0]?.message
+    const networkErrorMessage = error?.networkError?.message
+    const fallbackMessage = error?.message || 'Error desconocido'
+    return graphQLErrorMessage || networkErrorMessage || fallbackMessage
+  }
+
+  const openTaskErrorModal = ({ title, message, onRetry = null }) => {
+    setTaskErrorModal({
+      isOpen: true,
+      title,
+      message,
+      onRetry,
+    })
+  }
+
+  const closeTaskErrorModal = () => {
+    setTaskErrorModal({
+      isOpen: false,
+      title: '',
+      message: '',
+      onRetry: null,
+    })
+  }
 
   // Cargar el proyecto activo del local storage
   useEffect(() => {
@@ -130,15 +165,36 @@ function Dashboard() {
   const handleProjectChange = (id) => {
     setActiveProject(id)
     localStorage.setItem('activeProjectId', id)
+    setOptimisticTasks([])
+    setOptimisticDeletedTaskIds([])
+    closeTaskErrorModal()
   }
 
   const handleProjectDeleted = () => {
     setActiveProject(null)
+    setOptimisticTasks([])
+    setOptimisticDeletedTaskIds([])
+    closeTaskErrorModal()
     // Recargar proyectos
     window.location.reload()
   }
 
   const handleAddTask = async (taskData) => {
+    const tempTaskId = `temp-task-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+    const optimisticTask = {
+      id: tempTaskId,
+      title: taskData.title,
+      description: taskData.description || '',
+      status: taskData.status,
+      priority: taskData.priority,
+      due_date: taskData.due_date || null,
+      labels: labels.filter((label) => taskData.labelIds?.includes(label.id)),
+      assigned_to: members.filter((member) => taskData.userIds?.includes(member.id)),
+    }
+
+    closeTaskErrorModal()
+    setOptimisticTasks((prev) => [optimisticTask, ...prev])
+
     try {
       const { data } = await createTask({
         variables: {
@@ -154,6 +210,10 @@ function Dashboard() {
       // Si se creó la tarea y hay labels o usuarios seleccionados, asignarlos
       if (data?.createTask?.id) {
         const taskId = data.createTask.id
+        const createdTask = {
+          ...optimisticTask,
+          id: taskId,
+        }
         
         // Asignar labels
         if (taskData.labelIds && taskData.labelIds.length > 0) {
@@ -168,10 +228,26 @@ function Dashboard() {
             await assignTask({ variables: { taskId, userId } })
           }
         }
+
+        setOptimisticTasks((prev) => prev.map((task) => task.id === tempTaskId ? createdTask : task))
         // Refrescar tareas después de todas las asignaciones
         await refetchTasks()
+        setOptimisticTasks((prev) => prev.filter((task) => task.id !== taskId))
+      } else {
+        setOptimisticTasks((prev) => prev.filter((task) => task.id !== tempTaskId))
+        openTaskErrorModal({
+          title: 'No se pudo crear la tarea',
+          message: 'Intenta de nuevo en unos segundos.',
+          onRetry: () => handleAddTask(taskData),
+        })
       }
     } catch (error) {
+      setOptimisticTasks((prev) => prev.filter((task) => task.id !== tempTaskId))
+      openTaskErrorModal({
+        title: 'No se pudo crear la tarea',
+        message: extractErrorMessage(error),
+        onRetry: () => handleAddTask(taskData),
+      })
       console.error('Error al crear tarea:', error)
     }
   }
@@ -185,12 +261,33 @@ function Dashboard() {
     setIsConfirmDeleteOpen(true)
   }
 
+  const performDeleteTask = async (taskId) => {
+    closeTaskErrorModal()
+    setOptimisticDeletedTaskIds((prev) => [...prev, taskId])
+
+    try {
+      await deleteTask({
+        variables: { id: taskId },
+      })
+      await refetchTasks()
+    } catch (error) {
+      setOptimisticDeletedTaskIds((prev) => prev.filter((id) => id !== taskId))
+      openTaskErrorModal({
+        title: 'No se pudo eliminar la tarea',
+        message: extractErrorMessage(error),
+        onRetry: () => performDeleteTask(taskId),
+      })
+      console.error('Error al eliminar tarea:', error)
+    } finally {
+      setOptimisticDeletedTaskIds((prev) => prev.filter((id) => id !== taskId))
+    }
+  }
+
   const confirmDelete = async () => {
     if (taskToDelete) {
-      await deleteTask({
-        variables: { id: taskToDelete },
-      })
+      const deletingTaskId = taskToDelete
       setTaskToDelete(null)
+      await performDeleteTask(deletingTaskId)
     }
   }
 
@@ -281,7 +378,7 @@ function Dashboard() {
       return overId
     }
 
-    const overTask = tasks.find(t => t.id === overId)
+    const overTask = allTasks.find(t => t.id === overId)
     if (!overTask) return null
 
     if (overTask.status === 'TODO') return 'todo'
@@ -310,7 +407,7 @@ function Dashboard() {
     const activeId = active.id
     const overId = over.id
 
-    const activeTask = tasks.find(t => t.id === activeId)
+    const activeTask = allTasks.find(t => t.id === activeId)
     if (!activeTask) return
 
     // Determinar el status destino
@@ -325,7 +422,7 @@ function Dashboard() {
       destStatus = 'DONE'
     } else {
       // Si se soltó sobre otra tarea, usar su status
-      const overTask = tasks.find(t => t.id === overId)
+      const overTask = allTasks.find(t => t.id === overId)
       if (overTask) {
         destStatus = overTask.status
       }
@@ -348,7 +445,7 @@ function Dashboard() {
   }
 
   const currentProject = projects.find(p => p.id === activeProject)
-  const activeTask = tasks.find(t => t.id === activeId)
+  const activeTask = allTasks.find(t => t.id === activeId)
 
   if (projectsLoading) {
     return <div style={{
@@ -472,7 +569,7 @@ function Dashboard() {
             >
               <TaskColumn
                 title={"To Do"}
-                tasks={tasks}
+                tasks={allTasks}
                 status={"todo"}
                 isDropTarget={overColumnId === 'todo'}
                 handleDelete={handleDelete}
@@ -483,7 +580,7 @@ function Dashboard() {
               />
               <TaskColumn
                 title={"In Process"}
-                tasks={tasks}
+                tasks={allTasks}
                 status={"inprocess"}
                 isDropTarget={overColumnId === 'inprocess'}
                 handleDelete={handleDelete}
@@ -494,7 +591,7 @@ function Dashboard() {
               />
               <TaskColumn
                 title={"Done"}
-                tasks={tasks}
+                tasks={allTasks}
                 status={"done"}
                 isDropTarget={overColumnId === 'done'}
                 handleDelete={handleDelete}
@@ -527,6 +624,14 @@ function Dashboard() {
         confirmText="Eliminar"
         cancelText="Cancelar"
         isDangerous={true}
+      />
+
+      <TaskErrorModal
+        isOpen={taskErrorModal.isOpen}
+        onClose={closeTaskErrorModal}
+        onRetry={taskErrorModal.onRetry}
+        title={taskErrorModal.title}
+        message={taskErrorModal.message}
       />
 
       <TaskDetailModal
