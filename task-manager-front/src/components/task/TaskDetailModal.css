@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: var(--overlay);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -27,13 +27,13 @@
 }
 
 .task-detail-content {
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
   width: 90%;
   max-width: 700px;
   max-height: 85vh;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
   animation: slideIn 0.3s ease-out;
   display: flex;
   flex-direction: column;
@@ -74,7 +74,7 @@
   border: none;
   background: none;
   cursor: pointer;
-  color: #999;
+  color: var(--text-muted);
   line-height: 1;
   transition: color 0.2s;
   padding: 0;
@@ -88,20 +88,20 @@
 }
 
 .task-detail-close:hover {
-  color: #333;
-  background-color: #f0f0f0;
+  color: var(--text);
+  background-color: var(--surface-soft);
 }
 
 .task-detail-header {
   padding: 2rem 3rem 1.5rem 2rem;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
 
 .task-detail-title {
   margin: 0;
   font-size: 1.75rem;
-  color: #2c3e50;
+  color: var(--text);
   font-weight: 700;
   word-wrap: break-word;
 }
@@ -110,8 +110,9 @@
   width: 100%;
   font-size: 1rem;
   font-weight: 700;
-  color: #2c3e50;
-  border: 2px solid #3498db;
+  color: var(--text);
+  border: 1px solid var(--primary);
+  background: var(--surface);
   border-radius: 8px;
   padding: 0.5rem;
   font-family: inherit;
@@ -119,7 +120,7 @@
 
 .task-detail-title-input:focus {
   outline: none;
-  border-color: #2980b9;
+  border-color: var(--primary-hover);
 }
 
 .task-detail-body {
@@ -137,17 +138,17 @@
 }
 
 .task-detail-body::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--surface-soft);
   border-radius: 10px;
 }
 
 .task-detail-body::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.3);
+  background: var(--primary-soft);
   border-radius: 10px;
 }
 
 .task-detail-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.5);
+  background: var(--primary);
 }
 
 .task-detail-section {
@@ -162,7 +163,7 @@
 
 .task-detail-label {
   font-weight: 600;
-  color: #7f8c8d;
+  color: var(--text-muted);
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -170,7 +171,7 @@
 
 .task-detail-text {
   margin: 0;
-  color: #2c3e50;
+  color: var(--text);
   font-size: 1rem;
   line-height: 1.6;
 }
@@ -185,7 +186,7 @@
 }
 
 .task-detail-badge.status {
-  background-color: #3498db;
+  background-color: var(--primary);
   color: white;
 }
 
@@ -195,7 +196,9 @@
 
 .task-detail-select {
   padding: 0.5rem 1rem;
-  border: 2px solid #ddd;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
@@ -205,12 +208,14 @@
 
 .task-detail-select:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--primary);
 }
 
 .task-detail-input {
   padding: 0.75rem;
-  border: 2px solid #ddd;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
@@ -220,20 +225,22 @@
 
 .task-detail-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--primary);
 }
 
 .task-detail-date {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #2c3e50;
+  color: var(--text);
   font-size: 1rem;
 }
 
 .task-detail-textarea {
   padding: 0.75rem;
-  border: 2px solid #ddd;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
@@ -243,7 +250,7 @@
 
 .task-detail-textarea:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--primary);
 }
 
 .task-detail-assignees {
@@ -257,7 +264,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: #f8f9fa;
+  background-color: var(--surface-soft);
   border-radius: 20px;
 }
 
@@ -270,7 +277,7 @@
 }
 
 .assignee-avatar-placeholder {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-main);
   color: white;
   display: flex;
   align-items: center;
@@ -294,7 +301,7 @@
 }
 
 .task-detail-text-empty {
-  color: #95a5a6;
+  color: var(--text-muted);
   font-style: italic;
   margin: 0;
 }
@@ -306,7 +313,7 @@
   gap: 0.5rem;
   margin-bottom: 0.75rem;
   padding: 0.75rem;
-  background-color: #c3cfe2;
+  background-color: var(--surface-soft);
   border-radius: 12px;
   min-height: 50px;
   align-items: center;
@@ -344,11 +351,11 @@
   gap: 0.5rem;
   padding: 0.4rem 0.75rem;
   border-radius: 25px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-main);
   color: white;
   font-size: 0.9rem;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow-sm);
   animation: chipAppear 0.3s ease-out;
 }
 
@@ -385,8 +392,8 @@
 }
 
 .user-avatar-placeholder-tiny {
-  background: white;
-  color: #667eea;
+  background: var(--surface);
+  color: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -396,7 +403,7 @@
 
 .task-detail-footer {
   padding: 1.5rem 2rem;
-  border-top: 2px solid #f0f0f0;
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -422,43 +429,43 @@
 }
 
 .task-detail-btn-delete {
-  background-color: #e74c3c;
+  background-color: var(--danger);
   color: white;
 }
 
 .task-detail-btn-delete:hover {
-  background-color: #c0392b;
+  background-color: color-mix(in srgb, var(--danger) 88%, black);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
 .task-detail-btn-cancel {
-  background-color: #ecf0f1;
-  color: #7f8c8d;
+  background-color: var(--surface-soft);
+  color: var(--text-muted);
 }
 
 .task-detail-btn-cancel:hover {
-  background-color: #bdc3c7;
+  background-color: var(--border);
 }
 
 .task-detail-btn-edit {
-  background-color: #3498db;
+  background-color: var(--primary);
   color: white;
 }
 
 .task-detail-btn-edit:hover {
-  background-color: #2980b9;
+  background-color: var(--primary-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }
 
 .task-detail-btn-save {
-  background-color: #2ecc71;
+  background-color: var(--success);
   color: white;
 }
 
 .task-detail-btn-save:hover {
-  background-color: #27ae60;
+  background-color: color-mix(in srgb, var(--success) 88%, black);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
 }

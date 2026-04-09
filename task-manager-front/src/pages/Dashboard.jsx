@@ -20,11 +20,7 @@ import TaskDetailModal from '../components/task/TaskDetailModal'
 import ProfileModal from '../components/profile/ProfileModal'
 import ProjectDetailModal from '../components/project/ProjectDetailModal'
 import CreateProjectModal from '../components/project/CreateProjectModal'
-import logoutIcon from '../assets/logout.svg'
-import profileIcon from '../assets/profile.svg'
-import arrowRight from '../assets/arrow-right.svg'
-import arrowLeft from '../assets/arrow-left.svg'
-import settingsIcon from '../assets/settings.svg'
+import { ProfileIcon, LogoutIcon, SettingsIcon, ArrowRightIcon, ArrowLeftIcon } from '../components/icons'
 import '../App.css'
 
 function Dashboard() {
@@ -483,10 +479,11 @@ function Dashboard() {
           <h1 className='banner'>
             {currentProject?.name || 'Selecciona un proyecto'}
             {activeProject && (
-              <img
-                src={settingsIcon}
+              <SettingsIcon
                 onClick={() => setIsProjectDetailOpen(true)}
                 className='project-details-settings'
+                role="button"
+                aria-label="Configuración del proyecto"
               />
             )}
           </h1>
@@ -497,7 +494,7 @@ function Dashboard() {
           <div id='projects'>
             <div className="projectButtons">
               <button onClick={handleSlide} className='hideShowBtn'>
-                {sideSlide ? <img src={arrowLeft} className='arrowSlide'/> : <img src={arrowRight} className='arrowSlide'/>}
+                {sideSlide ? <ArrowLeftIcon className='arrowSlide' /> : <ArrowRightIcon className='arrowSlide' />}
               </button>
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -530,18 +527,18 @@ function Dashboard() {
             </ul>
           </div>
           <div className={`${sideSlide ? 'profileShort' : 'profile'}`}>
-            <img
-              src={profileIcon}
+            <ProfileIcon
               className='profileIcon'
-              alt="Perfil"
+              role="button"
+              aria-label="Perfil"
               onClick={() => setIsProfileModalOpen(true)}
             />
-            <img
-              src={logoutIcon}
+            <LogoutIcon
               className='logoutIcon'
+              role="button"
+              aria-label="Cerrar sesión"
               onClick={signOut}
               title="Cerrar sesión"
-              alt="Configuración"
             />
           </div>
         </aside>

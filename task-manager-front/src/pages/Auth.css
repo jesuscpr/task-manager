@@ -3,14 +3,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-soft);
   padding: 1rem;
 }
 
 .auth-card {
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
   padding: 2.5rem;
   width: 100%;
   max-width: 450px;
@@ -32,7 +32,7 @@
   text-align: center;
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-main);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -42,7 +42,7 @@
 .auth-subtitle {
   text-align: center;
   font-size: 1.5rem;
-  color: #333;
+  color: var(--text);
   margin-bottom: 2rem;
   font-weight: 600;
 }
@@ -61,13 +61,15 @@
 
 .form-group label {
   font-weight: 600;
-  color: #555;
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
 .form-group input {
   padding: 0.875rem;
-  border: 2px solid #e0e0e0;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s;
@@ -76,22 +78,22 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
 .form-group input:disabled {
-  background-color: #f5f5f5;
+  background-color: var(--surface-soft);
   cursor: not-allowed;
   opacity: 0.7;
 }
 
 .auth-error {
   padding: 0.875rem;
-  background-color: #fee;
-  border: 1px solid #fcc;
+  background-color: color-mix(in srgb, var(--danger) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
   border-radius: 8px;
-  color: #c33;
+  color: var(--danger);
   font-size: 0.9rem;
   text-align: center;
   animation: shake 0.3s ease-in-out;
@@ -105,7 +107,7 @@
 
 .auth-button {
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-main);
   color: white;
   border: none;
   border-radius: 8px;
@@ -135,7 +137,7 @@
 
 .auth-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
 .auth-button:active:not(:disabled) {
@@ -151,12 +153,12 @@
 .auth-footer {
   text-align: center;
   margin-top: 1.5rem;
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
 .auth-link {
-  color: #667eea;
+  color: var(--primary);
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s;
@@ -170,12 +172,12 @@
   left: 0;
   width: 0;
   height: 2px;
-  background: #667eea;
+  background: var(--primary);
   transition: width 0.3s;
 }
 
 .auth-link:hover {
-  color: #764ba2;
+  color: var(--primary-hover);
 }
 
 .auth-link:hover::after {

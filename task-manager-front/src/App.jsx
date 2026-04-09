@@ -4,23 +4,27 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Playground from './pages/Playground'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import ThemeToggle from './components/common/ThemeToggle'
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/playground" element={<Playground />} />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <>
+      <ThemeToggle />
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/playground" element={<Playground />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
   )
 }
 

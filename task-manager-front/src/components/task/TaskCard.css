@@ -2,8 +2,8 @@
    TASK CARD
 ======================================== */
 .taskCard {
-  background: white;
-  border: 2px solid #e5e8ec;
+  background: var(--surface);
+  border: 1px solid var(--border);
   cursor: pointer;
   width: 100%;
   min-height: 80px;
@@ -14,7 +14,7 @@
   user-select: none;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .taskCard::before {
@@ -24,15 +24,15 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-main);
   opacity: 0;
   transition: opacity 0.3s;
 }
 
 .taskCard:hover {
-  border-color: #667eea;
+  border-color: var(--primary);
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+  box-shadow: var(--shadow-md);
 }
 
 .taskCard:hover::before {
@@ -46,15 +46,15 @@
 .taskCard.dragging {
   opacity: 0.6;
   transform: rotate(3deg) scale(1.05);
-  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
-  border-color: #764ba2;
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-hover);
   cursor: grabbing;
 }
 
 .taskCard.dragging::before {
   opacity: 1;
   width: 100%;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  background: var(--primary-soft);
 }
 
 /* ========================================
@@ -65,7 +65,7 @@
   padding-bottom: 12px;
   padding-right: 40px;
   word-wrap: break-word;
-  color: #2c3e50;
+  color: var(--text);
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.5;
@@ -75,7 +75,7 @@
   position: absolute;
   right: 15px;
   bottom: 8px;
-  color: #2c3e50;
+  color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 500;
   line-height: 1.5;
@@ -91,9 +91,9 @@
   right: 12px;
   width: 10px;
   height: 10px;
-  background: #e74c3c;
+  background: var(--danger);
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(231, 76, 60, 0.6);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--danger) 60%, transparent);
   animation: pulse 2s infinite;
 }
 
@@ -104,7 +104,7 @@
   right: 12px;
   width: 10px;
   height: 10px;
-  background: #f39c12;
+  background: var(--warning);
   border-radius: 50%;
 }
 

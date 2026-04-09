@@ -1,0 +1,8 @@
+export { default as AddIcon } from './AddIcon'
+export { default as ArrowLeftIcon } from './ArrowLeftIcon'
+export { default as ArrowRightIcon } from './ArrowRightIcon'
+export { default as LogoutIcon } from './LogoutIcon'
+export { default as MoonIcon } from './MoonIcon'
+export { default as ProfileIcon } from './ProfileIcon'
+export { default as SettingsIcon } from './SettingsIcon'
+export { default as SunIcon } from './SunIcon'

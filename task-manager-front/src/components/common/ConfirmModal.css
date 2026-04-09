@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: var(--overlay);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,12 +35,12 @@
 }
 
 .confirm-modal-content {
-  background: white;
+  background: var(--surface);
   border-radius: 12px;
   width: 90%;
   max-width: 450px;
   position: relative;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
   animation: slideIn 0.3s ease-out;
 }
 
@@ -78,7 +78,7 @@
   border: none;
   background: none;
   cursor: pointer;
-  color: #999;
+  color: var(--text-muted);
   line-height: 1;
   transition: color 0.2s;
   padding: 0;
@@ -90,7 +90,7 @@
 }
 
 .confirm-modal-close:hover {
-  color: #333;
+  color: var(--text);
 }
 
 .confirm-modal-header {
@@ -100,7 +100,7 @@
 .confirm-modal-title {
   margin: 0;
   font-size: 1.5rem;
-  color: #333;
+  color: var(--text);
   font-weight: 600;
 }
 
@@ -111,7 +111,7 @@
 .confirm-modal-message {
   margin: 0;
   font-size: 1rem;
-  color: #666;
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
@@ -134,32 +134,32 @@
 }
 
 .confirm-btn-cancel {
-  background-color: #f0f0f0;
-  color: #666;
+  background-color: var(--surface-soft);
+  color: var(--text-muted);
 }
 
 .confirm-btn-cancel:hover {
-  background-color: #e0e0e0;
+  background-color: var(--border);
 }
 
 .confirm-btn-confirm {
-  background-color: #4a90e2;
+  background-color: var(--primary);
   color: white;
 }
 
 .confirm-btn-confirm:hover {
-  background-color: #357abd;
+  background-color: var(--primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+  box-shadow: var(--shadow-sm);
 }
 
 .confirm-btn-confirm.dangerous {
-  background-color: #e74c3c;
+  background-color: var(--danger);
 }
 
 .confirm-btn-confirm.dangerous:hover {
-  background-color: #c0392b;
-  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+  background-color: color-mix(in srgb, var(--danger) 88%, black);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Responsive */

@@ -3,7 +3,7 @@ import { useDroppable } from '@dnd-kit/core'
 import './TaskColumn.css'
 import DraggableTaskCard from './DraggableTaskCard'
 import AddTaskModal from './AddTaskModal'
-import iconoAdd from '../../assets/add.svg'
+import { AddIcon } from '../icons'
 
 const TaskColumn = ({ title, tasks, status, isDropTarget = false, handleDelete, handleAddTask, onTaskClick, availableLabels, availableUsers }) => {
   // Normalizar status para comparar
@@ -25,10 +25,10 @@ const TaskColumn = ({ title, tasks, status, isDropTarget = false, handleDelete, 
     <section className='taskColumn'>
       <div className='titleContainer'>
         <h2 className='title'>{title}</h2>
-        <img 
-          src={iconoAdd} 
-          alt='Añadir' 
+        <AddIcon
           className='iconoAdd'
+          role="button"
+          aria-label="Añadir tarea"
           onClick={() => setIsModalOpen(true)}
         />
       </div>

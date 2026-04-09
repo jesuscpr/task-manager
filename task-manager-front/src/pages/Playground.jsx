@@ -12,10 +12,7 @@ import TaskColumn from '../components/task/TaskColumn'
 import TaskCard from '../components/task/TaskCard'
 import ConfirmModal from '../components/common/ConfirmModal'
 import TaskDetailModal from '../components/task/TaskDetailModal'
-import profileIcon from '../assets/profile.svg'
-import arrowRight from '../assets/arrow-right.svg'
-import arrowLeft from '../assets/arrow-left.svg'
-import settingsIcon from '../assets/settings.svg'
+import { ProfileIcon, SettingsIcon, ArrowRightIcon, ArrowLeftIcon } from '../components/icons'
 import '../App.css'
 
 const guestUser = {
@@ -364,11 +361,11 @@ function Playground() {
           <h1 className="banner">
             {currentProject?.name || 'Sin proyecto'}
             {activeProject && (
-              <img
-                src={settingsIcon}
+              <SettingsIcon
                 onClick={() => setIsProjectDetailOpen(true)}
                 className="project-details-settings"
-                alt="Ajustes del proyecto"
+                role="button"
+                aria-label="Ajustes del proyecto"
               />
             )}
           </h1>
@@ -381,9 +378,9 @@ function Playground() {
             <div className="projectButtons">
               <button onClick={() => setSideSlide((prev) => !prev)} className="hideShowBtn">
                 {sideSlide ? (
-                  <img src={arrowLeft} className="arrowSlide" alt="Contraer sidebar" />
+                  <ArrowLeftIcon className="arrowSlide" />
                 ) : (
-                  <img src={arrowRight} className="arrowSlide" alt="Expandir sidebar" />
+                  <ArrowRightIcon className="arrowSlide" />
                 )}
               </button>
               <button onClick={() => setIsCreateProjectOpen(true)} className="newProjectBtn">
@@ -404,10 +401,10 @@ function Playground() {
             </ul>
           </div>
           <div className={`${sideSlide ? 'profileShort' : 'profile'}`}>
-            <img
-              src={profileIcon}
+            <ProfileIcon
               className="profileIcon"
-              alt="Perfil"
+              role="button"
+              aria-label="Perfil"
               onClick={() => setIsProfileOpen(true)}
               title="Ver perfil"
             />
